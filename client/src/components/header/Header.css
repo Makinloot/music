@@ -1,0 +1,15 @@
+.Header-profile-dropdown ul {
+  @apply !bg-graySecondary select-none;
+}
+
+.Header-profile-dropdown ul li {
+  @apply !py-2 capitalize;
+}
+
+.Header-profile-dropdown ul li:hover {
+  @apply !bg-grayRegular;
+}
+
+.Header-profile-dropdown ul a {
+  @apply !text-whiteRegular capitalize;
+}
