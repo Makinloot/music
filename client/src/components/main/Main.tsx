@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-export const Main: React.FC = () => {
+const Main: React.FC = () => {
   return (
     <main className="bg-blue-500">
       <div className="container">
@@ -15,3 +15,5 @@ export const Main: React.FC = () => {
     </main>
   );
 };
+
+export default Main;

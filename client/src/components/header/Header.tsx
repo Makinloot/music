@@ -6,23 +6,31 @@ import { Link } from "react-router-dom";
 import logo from "/logo.png";
 import "./Header.css";
 
-// HEADER DROPDOWN ITEMS
-const items: MenuProps["items"] = [
-  {
-    label: <Link to="/">account</Link>,
-    key: "0",
-  },
-  {
-    label: <Link to="/test">profile</Link>,
-    key: "1",
-  },
-  {
-    label: <Link to="/test">settings</Link>,
-    key: "2",
-  },
-];
-
 const Header: React.FC = () => {
+  // HEADER DROPDOWN ITEMS
+  const items: MenuProps["items"] = [
+    {
+      label: <Link to="/">account</Link>,
+      key: "0",
+    },
+    {
+      label: <Link to="/test">profile</Link>,
+      key: "1",
+    },
+    {
+      label: <Link to="/test">settings</Link>,
+      key: "2",
+    },
+    {
+      type: "divider",
+      className: "dropdown-menu-divider",
+    },
+    {
+      label: <a onClick={(e) => e.preventDefault()}>log out</a>,
+      key: "3",
+    },
+  ];
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -450 }}

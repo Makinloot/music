@@ -13,3 +13,7 @@
 .Header-profile-dropdown ul a {
   @apply !text-whiteRegular capitalize;
 }
+
+.Header-profile-dropdown .dropdown-menu-divider {
+  @apply !bg-grayRegular hover:bg-grayRegular !p-[2px];
+}
