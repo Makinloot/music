@@ -20,7 +20,7 @@ const Login: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex h-screen items-center justify-center">
       <Link to={loginUrl} className="bg-green-400 px-20 py-10">
         login
       </Link>

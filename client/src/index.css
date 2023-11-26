@@ -10,13 +10,8 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: black;
-}
-
 .container {
-  width: 1440px;
+  width: 1920px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
 }

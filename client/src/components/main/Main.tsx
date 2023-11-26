@@ -1,18 +1,65 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { HomeOutlined, SearchOutlined, HeartOutlined } from "@ant-design/icons";
+import { Layout, Menu, theme } from "antd";
+import { SpotifyContext } from "../../context/SpotifyContext";
+import { Routes, Route, Link } from "react-router-dom";
+import Header from "../header/Header";
 
 const Main: React.FC = () => {
+  const contextValues = SpotifyContext();
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  const { Sider, Content } = Layout;
+
   return (
-    <main className="bg-blue-500">
-      <div className="container">
-        <div className="Main-wrapper">
+    <Layout
+      className={`container min-h-[100vh] ${
+        contextValues?.darkMode ? "text-white" : "text-black"
+      }`}
+    >
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="demo-logo-vertical" />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+          <Menu.Item key="1" icon={<HomeOutlined />}>
+            <Link to="/">Home</Link>
+          </Menu.Item>
+          <Menu.Item key="2" icon={<SearchOutlined />}>
+            <Link to="/test">Search</Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<HeartOutlined />}>
+            <Link to="/liked">Liked</Link>
+          </Menu.Item>
+        </Menu>
+      </Sider>
+      <Layout>
+        {/* ----------- HEADER ----------- */}
+        <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+        {/* ----------- CONTENT ----------- */}
+        <Content
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: 280,
+            background: colorBgContainer,
+          }}
+        >
           <Routes>
-            <Route path="/" element={<div>I AM HOME</div>} />
-            <Route path="/test" element={<div>I AM TEST</div>} />
+            <Route path="/" element={<div>home</div>} />
+            <Route
+              path="/test"
+              element={
+                <div>
+                  <p>div</p>
+                </div>
+              }
+            />
+            <Route path="/liked" element={<div>liked</div>} />
           </Routes>
-        </div>
-      </div>
-    </main>
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 

@@ -4,6 +4,9 @@ import SpotifyWebApi from "spotify-web-api-js";
 type Values = {
   currentUser: SpotifyApi.CurrentUsersProfileResponse | null;
   token: string;
+  spotify: SpotifyWebApi.SpotifyWebApiJs;
+  darkMode: boolean;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Context = createContext<Values | null>(null);
@@ -17,10 +20,10 @@ const spotify = new SpotifyWebApi();
 const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] =
     useState<SpotifyApi.CurrentUsersProfileResponse | null>(null);
-  const [token, setToken] = useState<string>(() => {
-    const storedToken = window.localStorage.getItem("token");
-    return storedToken || "";
-  });
+  const [token, setToken] = useState<string>(
+    window.localStorage.getItem("token") || "",
+  );
+  const [darkMode, setDarkMode] = useState(true);
 
   // handle current user
   const handleCurrentUser = async () => {
@@ -66,6 +69,9 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const values = {
     currentUser,
     token,
+    spotify,
+    darkMode,
+    setDarkMode,
   };
 
   return <Context.Provider value={values}>{children}</Context.Provider>;

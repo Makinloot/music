@@ -1,84 +1,111 @@
 import React from "react";
+import { Layout, Button, theme, Dropdown, Space, MenuProps } from "antd";
 import { motion } from "framer-motion";
-import type { MenuProps } from "antd";
-import { Dropdown, Space } from "antd";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  BulbOutlined,
+  BulbFilled,
+} from "@ant-design/icons";
+import { SpotifyContext } from "../../context/SpotifyContext";
 import { Link } from "react-router-dom";
-import logo from "/logo.png";
-import "./Header.css";
 
-const Header: React.FC = () => {
-  // HEADER DROPDOWN ITEMS
+const Header: React.FC<{
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ collapsed, setCollapsed }) => {
+  const contextValues = SpotifyContext();
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  // dropdown menu items
   const items: MenuProps["items"] = [
     {
-      label: <Link to="/">account</Link>,
+      label: <Link to="/">Account</Link>,
       key: "0",
     },
     {
-      label: <Link to="/test">profile</Link>,
+      label: <Link to="/test">Profile</Link>,
       key: "1",
     },
     {
-      label: <Link to="/test">settings</Link>,
+      label: <Link to="/test">Settings</Link>,
       key: "2",
+    },
+    {
+      label: (
+        <button
+          onClick={() => {
+            contextValues?.setDarkMode(!contextValues.darkMode);
+          }}
+        >
+          Theme {contextValues?.darkMode ? <BulbFilled /> : <BulbOutlined />}
+        </button>
+      ),
+      key: "3",
     },
     {
       type: "divider",
       className: "dropdown-menu-divider",
     },
     {
-      label: <a onClick={(e) => e.preventDefault()}>log out</a>,
-      key: "3",
+      label: (
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            window.localStorage.removeItem("token");
+            location.reload();
+          }}
+        >
+          Log out
+        </a>
+      ),
+      key: "4",
     },
   ];
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -450 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, type: "just" }}
-      className="bg-grayRegular"
+    <Layout.Header
+      className="flex items-center justify-between p-0 pr-5"
+      style={{ background: colorBgContainer }}
     >
-      <div className="container">
-        <div className="Header-wrapper flex h-20 items-center justify-between !py-12">
-          {/* HEADER LOGO */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="Header-logo flex h-full w-[150px] items-center justify-center"
-          >
-            <Link to={"/"}>
-              <img className="w-full" src={logo} alt="logo" />
-            </Link>
-          </motion.div>
-          {/* PROFILE DROPDOWN */}
-          <Dropdown
-            className="cursor-pointer select-none"
-            menu={{ items }}
-            trigger={["click"]}
-            overlayClassName={"Header-profile-dropdown"}
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-            >
-              <button className="inline-block">
-                <Space className="bg-graySecondary flex min-w-[80px] justify-between rounded-full py-1 pl-1 pr-4">
-                  <div>
-                    <img
-                      className="h-8 w-8 rounded-full object-cover"
-                      src="https://picsum.photos/200/300"
-                    />
-                  </div>
-                  <strong className="text-lg">Seed</strong>
-                </Space>
-              </button>
-            </motion.div>
-          </Dropdown>
-        </div>
-      </div>
-    </motion.header>
+      <Button
+        type="text"
+        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        onClick={() => setCollapsed(!collapsed)}
+        style={{
+          fontSize: "16px",
+          width: 64,
+          height: 64,
+        }}
+      />
+
+      <Dropdown
+        className={`flex cursor-pointer select-none items-center rounded-full`}
+        menu={{ items }}
+        trigger={["click"]}
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <button className="">
+            <Space className="flex h-[35px] min-w-[80px] items-center justify-between rounded-full px-2 py-5 pr-3">
+              <div>
+                <img
+                  className="h-8 w-8 rounded-full object-cover"
+                  src="https://picsum.photos/200/300"
+                />
+              </div>
+              <div>
+                <strong className="text-lg">Seed</strong>
+              </div>
+            </Space>
+          </button>
+        </motion.div>
+      </Dropdown>
+    </Layout.Header>
   );
 };
 
