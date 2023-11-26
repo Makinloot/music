@@ -4,6 +4,7 @@ import { Layout, Menu, theme } from "antd";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { Routes, Route, Link } from "react-router-dom";
 import Header from "../header/Header";
+import Liked from "../../pages/Liked";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
@@ -19,9 +20,20 @@ const Main: React.FC = () => {
         contextValues?.darkMode ? "text-white" : "text-black"
       }`}
     >
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        className="relative"
+      >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+        <Menu
+          // for sticky menu
+          // className="sticky top-0 w-full"
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+        >
           <Menu.Item key="1" icon={<HomeOutlined />}>
             <Link to="/">Home</Link>
           </Menu.Item>
@@ -55,7 +67,7 @@ const Main: React.FC = () => {
                 </div>
               }
             />
-            <Route path="/liked" element={<div>liked</div>} />
+            <Route path="/liked" element={<Liked />} />
           </Routes>
         </Content>
       </Layout>

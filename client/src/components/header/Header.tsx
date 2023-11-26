@@ -46,7 +46,6 @@ const Header: React.FC<{
     },
     {
       type: "divider",
-      className: "dropdown-menu-divider",
     },
     {
       label: (
@@ -79,7 +78,6 @@ const Header: React.FC<{
           height: 64,
         }}
       />
-
       <Dropdown
         className={`flex cursor-pointer select-none items-center rounded-full`}
         menu={{ items }}
@@ -99,7 +97,9 @@ const Header: React.FC<{
                 />
               </div>
               <div>
-                <strong className="text-lg">Seed</strong>
+                <strong className="text-lg">
+                  {contextValues?.currentUser?.display_name}
+                </strong>
               </div>
             </Space>
           </button>

@@ -27,7 +27,13 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
 
   // handle current user
   const handleCurrentUser = async () => {
-    spotify.getMe().then((user) => setCurrentUser(user));
+    try {
+      const userData = await spotify.getMe();
+      setCurrentUser(userData);
+    } catch (error) {
+      console.log("error", error);
+      localStorage.removeItem("token");
+    }
   };
 
   useEffect(() => {
@@ -47,14 +53,17 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     const hash = getTokenFromUrl();
     const _token = hash.access_token;
 
+    // save token to local storage
     if (_token) {
       window.localStorage.setItem("token", _token);
-      setToken(_token);
     }
 
-    // Set access token for SpotifyWebApi instance
-    if (token) {
-      spotify.setAccessToken(token);
+    // save token in state, save token in spotify instance
+    const tokenFromStorage = window.localStorage.getItem("token");
+    if (tokenFromStorage) {
+      setToken(tokenFromStorage);
+      spotify.setAccessToken(window.localStorage.getItem("token"));
+      handleCurrentUser();
     }
 
     // Fetch current user details
