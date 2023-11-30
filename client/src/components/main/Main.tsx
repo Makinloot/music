@@ -52,7 +52,7 @@ const Main: React.FC = () => {
         <Content
           style={{
             margin: "24px 16px",
-            padding: 24,
+            padding: "8px",
             minHeight: 280,
             background: colorBgContainer,
           }}

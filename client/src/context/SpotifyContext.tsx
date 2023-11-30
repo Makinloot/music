@@ -7,6 +7,12 @@ type Values = {
   spotify: SpotifyWebApi.SpotifyWebApiJs;
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  likedTracks: SpotifyApi.SavedTrackObject[] | undefined;
+  setLikedTracks: React.Dispatch<
+    React.SetStateAction<SpotifyApi.SavedTrackObject[] | undefined>
+  >;
+  likedOffset: number;
+  setLikedOffset: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const Context = createContext<Values | null>(null);
@@ -24,6 +30,10 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     window.localStorage.getItem("token") || "",
   );
   const [darkMode, setDarkMode] = useState(true);
+  const [likedTracks, setLikedTracks] = useState<
+    SpotifyApi.SavedTrackObject[] | undefined
+  >();
+  const [likedOffset, setLikedOffset] = useState(0);
 
   // handle current user
   const handleCurrentUser = async () => {
@@ -33,6 +43,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.log("error", error);
       localStorage.removeItem("token");
+      window.location.reload();
     }
   };
 
@@ -73,7 +84,38 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Clear browser URL
     window.location.hash = "";
-  }, [token]); // Include 'token' in the dependency array
+  }, [token]);
+
+  // fetch liked tracks
+  useEffect(() => {
+    async function fetchLikedTracks() {
+      try {
+        let allData: SpotifyApi.SavedTrackObject[] = [];
+        let hasMoreItems = true;
+        let offset = 0;
+
+        while (hasMoreItems) {
+          const fetchedData = await spotify.getMySavedTracks({
+            limit: 50,
+            offset: offset,
+          });
+
+          if (fetchedData?.items && fetchedData.items.length > 0) {
+            allData = [...allData, ...fetchedData.items];
+            offset += 50;
+
+            setLikedTracks(allData);
+          } else {
+            hasMoreItems = false;
+          }
+        }
+      } catch (error) {
+        console.log(`Error fetching liked tracks: ${error}`);
+      }
+    }
+
+    fetchLikedTracks();
+  }, [token]);
 
   const values = {
     currentUser,
@@ -81,6 +123,10 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     spotify,
     darkMode,
     setDarkMode,
+    likedTracks,
+    setLikedTracks,
+    likedOffset,
+    setLikedOffset,
   };
 
   return <Context.Provider value={values}>{children}</Context.Provider>;
