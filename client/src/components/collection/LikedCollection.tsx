@@ -46,8 +46,8 @@ export default function LikedCollection() {
       <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2">
         <span>#</span>
         <span>Title</span>
-        <span>Album</span>
-        <span className="date-added">Date added</span>
+        <span className="album-name">Album</span>
+        <span className="date-added added-at-col">Date added</span>
         <span>
           <ClockCircleOutlined />
         </span>
@@ -84,10 +84,10 @@ export default function LikedCollection() {
                         </span>
                       </div>
                     </div>
-                    <div>
-                      <span>{album.name}</span>
+                    <div className="album-name truncate pr-4">
+                      <span className="truncate">{album.name}</span>
                     </div>
-                    <div>
+                    <div className="added-at-col">
                       <span>{moment(item.added_at).fromNow()}</span>
                     </div>
                     <div>
@@ -133,10 +133,10 @@ export default function LikedCollection() {
                       </span>
                     </div>
                   </div>
-                  <div>
-                    <span>{album.name}</span>
+                  <div className="album-name truncate pr-4">
+                    <span className="truncate">{album.name}</span>
                   </div>
-                  <div>
+                  <div className="added-at-col">
                     <span>{moment(item.added_at).fromNow()}</span>
                   </div>
                   <div>

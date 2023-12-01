@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
 import likedCover from "/liked-cover.png";
 import Collection from "../components/collection/Collection";
 const Liked: React.FC = () => {
   const contextValues = SpotifyContext();
+
+  useEffect(() => {
+    contextValues?.setSelectedPage("3");
+  }, [contextValues?.selectedPage]);
 
   return (
     <div className="Liked">

@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
-import useLikedTracks from "../hooks/setLikedTracks";
+import useLikedTracks from "../hooks/useLikedTracks";
+import useSavedAlbums from "../hooks/useSavedAlbums";
+import useSavedPlaylists from "../hooks/useSavedPlaylists";
+import useSavedArtists from "../hooks/useSavedArtists";
 
 type Values = {
   currentUser: SpotifyApi.CurrentUsersProfileResponse | null;
@@ -10,6 +13,14 @@ type Values = {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   likedTracks: SpotifyApi.SavedTrackObject[] | undefined;
   totalTracks: number;
+  selectedPage: string;
+  setSelectedPage: React.Dispatch<React.SetStateAction<string>>;
+  savedAlbums: SpotifyApi.SavedAlbumObject[] | undefined;
+  totalAlbums: number;
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  savedPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
+  savedArtists: SpotifyApi.ArtistObjectFull[] | undefined;
 };
 
 const Context = createContext<Values | null>(null);
@@ -26,10 +37,20 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string>(
     window.localStorage.getItem("token") || "",
   );
+  const [collapsed, setCollapsed] = useState(
+    localStorage.getItem("menuCollapsed") === "true" ? true : false || false,
+  );
   const [darkMode, setDarkMode] = useState(true);
+  const [selectedPage, setSelectedPage] = useState("1");
 
   // liked tracks & total liked tracks
   const { likedTracks, totalTracks } = useLikedTracks(token);
+  // saved albums & total saved albums
+  const { savedAlbums, totalAlbums } = useSavedAlbums(token);
+  // saved playlists
+  const { savedPlaylists } = useSavedPlaylists(token);
+  // saved artists
+  const { savedArtists } = useSavedArtists(token);
 
   // handle current user
   const handleCurrentUser = async () => {
@@ -42,6 +63,11 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
       window.location.reload();
     }
   };
+
+  useEffect(() => {
+    // save menu state in storage
+    localStorage.setItem("menuCollapsed", String(collapsed));
+  }, [collapsed]);
 
   useEffect(() => {
     const getTokenFromUrl = () => {
@@ -90,6 +116,14 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     setDarkMode,
     likedTracks,
     totalTracks,
+    selectedPage,
+    setSelectedPage,
+    savedAlbums,
+    totalAlbums,
+    collapsed,
+    setCollapsed,
+    savedPlaylists,
+    savedArtists,
   };
 
   return <Context.Provider value={values}>{children}</Context.Provider>;

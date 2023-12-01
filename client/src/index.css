@@ -15,3 +15,23 @@
   max-width: 100%;
   margin: 0 auto;
 }
+
+.sider::-webkit-scrollbar {
+  width: 0px;
+}
+
+.sider::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.sider {
+  scrollbar-width: thin;
+}
+
+.sider::-moz-scrollbar {
+  width: 0px;
+}
+
+.sider::-moz-scrollbar-thumb {
+  background-color: transparent;
+}

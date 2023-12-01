@@ -1,18 +1,28 @@
-import React, { useState } from "react";
-import { HomeOutlined, SearchOutlined, HeartOutlined } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import React, { useEffect } from "react";
+
+import { Layout, theme } from "antd";
 import { SpotifyContext } from "../../context/SpotifyContext";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "../header/Header";
 import Liked from "../../pages/Liked";
+import Aside from "../aside/Aside";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
-  const [collapsed, setCollapsed] = useState(false);
+
+  const location = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const { Sider, Content } = Layout;
+  const { Content } = Layout;
+
+  useEffect(() => {
+    // save the selected key based on the current location
+    const path = location.pathname;
+    if (path === "/") localStorage.setItem("selectedKey", "1");
+    else if (path === "/test") localStorage.setItem("selectedKey", "2");
+    else if (path === "/liked") localStorage.setItem("selectedKey", "3");
+  }, [location]);
 
   return (
     <Layout
@@ -20,34 +30,10 @@ const Main: React.FC = () => {
         contextValues?.darkMode ? "text-white" : "text-black"
       }`}
     >
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        className="relative"
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          // for sticky menu
-          // className="sticky top-0 w-full"
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-        >
-          <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Link to="/">Home</Link>
-          </Menu.Item>
-          <Menu.Item key="2" icon={<SearchOutlined />}>
-            <Link to="/test">Search</Link>
-          </Menu.Item>
-          <Menu.Item key="3" icon={<HeartOutlined />}>
-            <Link to="/liked">Liked</Link>
-          </Menu.Item>
-        </Menu>
-      </Sider>
+      <Aside />
       <Layout>
         {/* ----------- HEADER ----------- */}
-        <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+        <Header />
         {/* ----------- CONTENT ----------- */}
         <Content
           style={{

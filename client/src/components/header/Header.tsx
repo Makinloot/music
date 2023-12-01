@@ -1,4 +1,3 @@
-import React from "react";
 import { Layout, Button, theme, Dropdown, Space, MenuProps } from "antd";
 import { motion } from "framer-motion";
 import {
@@ -9,11 +8,9 @@ import {
 } from "@ant-design/icons";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { Link } from "react-router-dom";
+import defaultUser from "/user.png";
 
-const Header: React.FC<{
-  collapsed: boolean;
-  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ collapsed, setCollapsed }) => {
+const Header = () => {
   const contextValues = SpotifyContext();
   const {
     token: { colorBgContainer },
@@ -70,8 +67,14 @@ const Header: React.FC<{
     >
       <Button
         type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)}
+        icon={
+          contextValues?.collapsed ? (
+            <MenuUnfoldOutlined />
+          ) : (
+            <MenuFoldOutlined />
+          )
+        }
+        onClick={() => contextValues?.setCollapsed(!contextValues?.collapsed)}
         style={{
           fontSize: "16px",
           width: 64,
@@ -93,7 +96,11 @@ const Header: React.FC<{
               <div>
                 <img
                   className="h-8 w-8 rounded-full object-cover"
-                  src="https://picsum.photos/200/300"
+                  src={
+                    (contextValues?.currentUser?.images &&
+                      contextValues.currentUser.images[0].url) ||
+                    defaultUser
+                  }
                 />
               </div>
               <div>
