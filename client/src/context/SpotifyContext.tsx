@@ -21,6 +21,10 @@ type Values = {
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   savedPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
   savedArtists: SpotifyApi.ArtistObjectFull[] | undefined;
+  trackUris: string[];
+  setTrackUris: React.Dispatch<React.SetStateAction<string[]>>;
+  play: boolean;
+  setPlay: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Context = createContext<Values | null>(null);
@@ -42,6 +46,8 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [darkMode, setDarkMode] = useState(true);
   const [selectedPage, setSelectedPage] = useState("1");
+  const [trackUris, setTrackUris] = useState([""]);
+  const [play, setPlay] = useState(false);
 
   // liked tracks & total liked tracks
   const { likedTracks, totalTracks } = useLikedTracks(token);
@@ -124,6 +130,10 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     setCollapsed,
     savedPlaylists,
     savedArtists,
+    trackUris,
+    setTrackUris,
+    play,
+    setPlay,
   };
 
   return <Context.Provider value={values}>{children}</Context.Provider>;

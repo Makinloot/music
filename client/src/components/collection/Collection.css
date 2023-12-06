@@ -3,12 +3,38 @@
   grid-template-columns: 5% 85% 5%;
 }
 
+.grid-cols-search {
+  display: grid;
+}
+
 .added-at-col {
   display: none;
 }
 
 .album-name {
   display: none;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  grid-template-rows: 0.5fr 1fr;
+  grid-template-areas:
+    "artist tracks"
+    "albums tracks";
+  gap: 1rem;
+}
+
+.artist-container {
+  grid-area: artist;
+}
+
+.albums-container {
+  grid-area: albums;
+}
+
+.tracks-container {
+  grid-area: tracks;
 }
 
 @media (min-width: 768px) {
@@ -28,6 +54,10 @@
 @media (min-width: 1000px) {
   .grid-cols {
     grid-template-columns: 5% 35% 30% 15% 10%;
+  }
+
+  .grid-cols-search {
+    grid-template-columns: 5% 45% 30% 15%;
   }
 
   .added-at-col {

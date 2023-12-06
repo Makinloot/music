@@ -4,6 +4,7 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 import { Input } from "antd";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { v4 as uuidv4 } from "uuid";
+import { IoPauseCircle, IoPlayCircle } from "react-icons/io5";
 
 export default function LikedCollection() {
   const contextValues = SpotifyContext();
@@ -11,7 +12,20 @@ export default function LikedCollection() {
     SpotifyApi.SavedTrackObject[] | undefined
   >([]);
   const [searchValue, setSearchValue] = useState("");
+  // const [shuffle, setShuffle] = useState(false);
 
+  const likedTrackUris = contextValues?.likedTracks?.map(
+    (item) => item.track.name,
+  );
+
+  // shuffle liked tracks
+  // useEffect(() => {
+  //   const shuffledLikedTrackUris = likedTrackUris
+  //     ? [...likedTrackUris].sort(() => Math.random() - 0.5)
+  //     : [];
+  // }, [shuffle]);
+
+  // search liked tracks
   useEffect(() => {
     if (searchValue.length >= 1) {
       const filterLikedTracks = contextValues?.likedTracks?.filter((item) => {
@@ -21,7 +35,6 @@ export default function LikedCollection() {
           item.track.album.name.toLowerCase().includes(searchValue)
         );
       });
-      console.log(`searched track: `, filterLikedTracks);
       setSearchedData(filterLikedTracks);
     } else {
       setSearchedData(undefined);
@@ -30,9 +43,33 @@ export default function LikedCollection() {
 
   return (
     <>
-      <div>
+      <div className="flex items-center">
+        <div className="flex cursor-pointer items-center gap-1">
+          {contextValues?.play ? (
+            <button onClick={() => contextValues.setPlay(false)}>
+              <IoPauseCircle size={38} />
+            </button>
+          ) : (
+            <button
+              onClick={() =>
+                likedTrackUris && contextValues?.setTrackUris(likedTrackUris)
+              }
+            >
+              <IoPlayCircle size={38} />
+            </button>
+          )}
+          {/* {shuffle ? (
+            <button onClick={() => setShuffle(false)}>
+              <IoShuffle size={35} color="green" />
+            </button>
+          ) : (
+            <button onClick={() => setShuffle(true)}>
+              <IoShuffle size={35} />
+            </button>
+          )} */}
+        </div>
         <Input
-          className="w-[250px]"
+          className="ml-2 w-[250px]"
           placeholder="Search in playlist..."
           onChange={(e) => {
             const debouneTimer = setTimeout(() => {
@@ -43,7 +80,7 @@ export default function LikedCollection() {
           }}
         />
       </div>
-      <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2">
+      <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2 pr-7">
         <span>#</span>
         <span>Title</span>
         <span className="album-name">Album</span>
@@ -54,7 +91,7 @@ export default function LikedCollection() {
       </div>
       <div
         id="scrollableDiv"
-        className="collection h-[470px] overflow-scroll overflow-x-hidden"
+        className="collection h-[590px] overflow-scroll overflow-x-hidden"
       >
         <div className="collection-body">
           {searchedData !== undefined ? (

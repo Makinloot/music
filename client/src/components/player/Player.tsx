@@ -1,26 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
+import { SpotifyContext } from "../../context/SpotifyContext";
 
 const Player = ({ accessToken }: { accessToken: string }) => {
-  // const { trackUri } = useSpotify()
-  const [play, setPlay] = useState(false);
+  const contextValues = SpotifyContext();
 
-  // useEffect(() => {
-  //   setPlay(true)
-  // }, [trackUri])
+  useEffect(() => {
+    contextValues?.setPlay(true);
+  }, [contextValues?.trackUris]);
 
   return (
     <div className="player fixed bottom-0 w-full">
       <SpotifyPlayer
-        token={localStorage.getItem("token") || ""}
+        token={accessToken}
         callback={(state) => {
-          if (!state.isPlaying) setPlay(false);
+          // console.log(state);
+          if (!state.isPlaying) contextValues?.setPlay(false);
         }}
-        play={play}
-        // uris={trackUri ? [trackUri] : []}
-        uris={"spotify:track:0WQiDwKJclirSYG9v5tayI"}
+        play={contextValues?.play}
+        uris={contextValues?.trackUris ? contextValues?.trackUris : []}
       />
-      <div className="player-menu flex-row">{/* <Navbar bottom /> */}</div>
     </div>
   );
 };

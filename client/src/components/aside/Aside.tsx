@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input, Layout, Menu } from "antd";
 import { HomeOutlined, SearchOutlined, HeartOutlined } from "@ant-design/icons";
 import { IoLibraryOutline } from "react-icons/io5";
@@ -23,14 +23,20 @@ const Aside = () => {
   const [searchValue, setSearchValue] = useState("");
   const { Sider } = Layout;
 
+  // set search value to empty string if menu is collapsed/opened
+  useEffect(() => {
+    setSearchValue("");
+  }, [contextValues?.collapsed]);
+
   return (
     <Sider
       trigger={null}
       collapsible
       collapsed={contextValues?.collapsed}
-      className="sider h-screen overflow-scroll overflow-x-hidden"
+      className="sider mb-[90px] overflow-scroll overflow-x-hidden"
       collapsedWidth={100}
     >
+      {/* ASIDE MENU */}
       <Menu
         className="py-2"
         theme="dark"
@@ -41,7 +47,7 @@ const Aside = () => {
           <Link to="/">Home</Link>
         </Menu.Item>
         <Menu.Item key="2" icon={<SearchOutlined />}>
-          <Link to="/test">Search</Link>
+          <Link to="/search">Search</Link>
         </Menu.Item>
         <Menu.Item key="3" icon={<HeartOutlined />}>
           <Link to="/liked">Liked</Link>
@@ -77,18 +83,36 @@ const Aside = () => {
               <SwiperSlide>
                 <Button
                   className="px-8"
-                  onClick={() => setAsideType("playlist")}
+                  danger={asideType === "playlist" && true}
+                  onClick={() => {
+                    setSearchValue("");
+                    setAsideType("playlist");
+                  }}
                 >
                   Playlists
                 </Button>
               </SwiperSlide>
               <SwiperSlide>
-                <Button className="px-8" onClick={() => setAsideType("album")}>
+                <Button
+                  className="px-8"
+                  danger={asideType === "album" && true}
+                  onClick={() => {
+                    setSearchValue("");
+                    setAsideType("album");
+                  }}
+                >
                   Albums
                 </Button>
               </SwiperSlide>
               <SwiperSlide>
-                <Button className="px-8" onClick={() => setAsideType("artist")}>
+                <Button
+                  className="px-8"
+                  danger={asideType === "artist" && true}
+                  onClick={() => {
+                    setSearchValue("");
+                    setAsideType("artist");
+                  }}
+                >
                   Artists
                 </Button>
               </SwiperSlide>
@@ -96,17 +120,13 @@ const Aside = () => {
           </div>
         )}
 
+        {/* SEARCH INPUT */}
         {!contextValues?.collapsed && (
           <Input
             className="w-full"
             placeholder="Search in your library..."
-            onChange={(e) => {
-              const debouneTimer = setTimeout(() => {
-                setSearchValue(e.target.value);
-              }, 500);
-
-              return () => clearTimeout(debouneTimer);
-            }}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
         )}
 

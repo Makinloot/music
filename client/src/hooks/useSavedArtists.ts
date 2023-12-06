@@ -12,7 +12,6 @@ export default function useSavedArtists(token: string) {
         let allData: SpotifyApi.ArtistObjectFull[] = [];
 
         const fetchedData = await spotify.getFollowedArtists();
-        console.log("fetched data", fetchedData);
         if (
           fetchedData?.artists.items &&
           fetchedData.artists.items.length > 0
@@ -22,7 +21,7 @@ export default function useSavedArtists(token: string) {
           setSavedArtists(allData);
         }
       } catch (error) {
-        console.log(`Error fetching liked tracks: ${error}`);
+        console.log("Error fetching saved artists:", error);
       }
     }
 

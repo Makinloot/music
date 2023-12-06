@@ -1,0 +1,17 @@
+.categories-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 1500px) {
+  .categories-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .categories-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
