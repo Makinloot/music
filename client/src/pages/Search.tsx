@@ -21,6 +21,7 @@ const Search = () => {
 
             return () => clearTimeout(debouneTimer);
           }}
+          allowClear
         />
       </div>
       {!searchValue ? (

@@ -65,6 +65,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
       setCurrentUser(userData);
     } catch (error) {
       console.log("error", error);
+      localStorage.removeItem("selectedKey");
       localStorage.removeItem("token");
       window.location.reload();
     }

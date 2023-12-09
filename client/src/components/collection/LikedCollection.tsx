@@ -80,7 +80,7 @@ export default function LikedCollection() {
           }}
         />
       </div>
-      <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2 pr-7">
+      <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2">
         <span>#</span>
         <span>Title</span>
         <span className="album-name">Album</span>
@@ -91,7 +91,8 @@ export default function LikedCollection() {
       </div>
       <div
         id="scrollableDiv"
-        className="collection h-[590px] overflow-scroll overflow-x-hidden"
+        className="collection absolutew-full"
+        // className="collection absolute h-[calc(100%-145px)] w-full overflow-scroll overflow-x-hidden"
       >
         <div className="collection-body">
           {searchedData !== undefined ? (

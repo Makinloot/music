@@ -27,7 +27,7 @@ const Main: React.FC = () => {
 
   return (
     <Layout
-      className={`container h-[100vh] ${
+      className={`container min-h-[100vh] ${
         contextValues?.darkMode ? "text-white" : "text-black"
       }`}
     >
@@ -38,11 +38,12 @@ const Main: React.FC = () => {
         {/* ----------- CONTENT ----------- */}
         <Content
           style={{
-            margin: "24px 16px 90px",
+            margin: "24px 16px",
             padding: "8px",
             minHeight: 280,
             background: colorBgContainer,
           }}
+          className="relative"
         >
           <Routes>
             <Route path="/" element={<div>home</div>} />

@@ -30,7 +30,7 @@ const Categories = () => {
   return (
     <>
       <h3 className="mb-4 text-2xl">Browse by categories</h3>
-      <div className="Search-categories h-[84%] overflow-scroll overflow-x-hidden pb-5 pr-2">
+      <div className="Search-categories">
         <div className="categories-container">
           {categories &&
             categories.map((category) => (
@@ -53,7 +53,7 @@ const CategoryCard: React.FC<{
         <h4 className="absolute left-[6px] top-[2px] text-xl text-white">
           {name}
         </h4>
-        <img src={icons[0].url} alt={name} className="" />
+        <img src={icons[0].url} alt={name} />
       </div>
     </Link>
   );

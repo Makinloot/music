@@ -33,7 +33,6 @@ const Aside = () => {
       trigger={null}
       collapsible
       collapsed={contextValues?.collapsed}
-      className="sider mb-[90px] overflow-scroll overflow-x-hidden"
       collapsedWidth={100}
     >
       {/* ASIDE MENU */}
@@ -54,7 +53,7 @@ const Aside = () => {
         </Menu.Item>
       </Menu>
       <div
-        className={`Library my-6  ${
+        className={`Library relative my-6 ${
           contextValues?.collapsed ? "px-[4px]" : "px-[2px]"
         }`}
       >
@@ -131,13 +130,15 @@ const Aside = () => {
         )}
 
         {/* MAPPED DATA */}
-        {asideType === "playlist" ? (
-          <AsidePlaylists searchValue={searchValue} />
-        ) : asideType === "album" ? (
-          <AsideAlbums searchValue={searchValue} />
-        ) : (
-          asideType === "artist" && <AsideArtists searchValue={searchValue} />
-        )}
+        <div className="">
+          {asideType === "playlist" ? (
+            <AsidePlaylists searchValue={searchValue} />
+          ) : asideType === "album" ? (
+            <AsideAlbums searchValue={searchValue} />
+          ) : (
+            asideType === "artist" && <AsideArtists searchValue={searchValue} />
+          )}
+        </div>
       </div>
     </Sider>
   );
