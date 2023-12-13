@@ -1,6 +1,6 @@
 .grid-cols {
   display: grid;
-  grid-template-columns: 5% 85% 5%;
+  grid-template-columns: 20% 80%;
 }
 
 .grid-cols-search {
@@ -17,6 +17,10 @@
 }
 
 .song-duration {
+  display: none;
+}
+
+.duration {
   display: none;
 }
 
@@ -48,6 +52,32 @@
   gap: 1rem;
 }
 
+@media (min-width: 600px) {
+  .grid-cols {
+    grid-template-columns: 10% 75% 15%;
+  }
+
+  .grid-cols-search {
+    grid-template-columns: 5% 80% 15%;
+  }
+
+  .added-at-col {
+    display: none;
+  }
+
+  .album-name {
+    /* display: initial; */
+  }
+
+  .song-duration {
+    display: initial;
+  }
+
+  .duration {
+    display: initial;
+  }
+}
+
 @media (min-width: 768px) {
   .grid-cols {
     grid-template-columns: 5% 45% 35% 15%;
@@ -62,7 +92,7 @@
   }
 
   .album-name {
-    display: none;
+    display: initial;
   }
 
   .song-duration {

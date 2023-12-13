@@ -50,7 +50,7 @@ const CategoryCard: React.FC<{
   return (
     <Link to={`/genre/${id}`}>
       <div className="relative">
-        <h4 className="absolute left-[6px] top-[2px] text-xl text-white">
+        <h4 className="absolute left-[6px] top-[2px] w-[95%] truncate text-xl text-white">
           {name}
         </h4>
         <img src={icons[0].url} alt={name} />

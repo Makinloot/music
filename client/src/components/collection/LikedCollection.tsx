@@ -78,6 +78,7 @@ export default function LikedCollection() {
 
             return () => clearTimeout(debouneTimer);
           }}
+          allowClear
         />
       </div>
       <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2">
@@ -85,7 +86,7 @@ export default function LikedCollection() {
         <span>Title</span>
         <span className="album-name">Album</span>
         <span className="date-added added-at-col">Date added</span>
-        <span>
+        <span className="duration">
           <ClockCircleOutlined />
         </span>
       </div>
@@ -128,7 +129,7 @@ export default function LikedCollection() {
                     <div className="added-at-col">
                       <span>{moment(item.added_at).fromNow()}</span>
                     </div>
-                    <div>
+                    <div className="duration">
                       <span>{`${String(
                         moment.duration(duration_ms).minutes(),
                       ).padStart(2, "0")}:${String(
@@ -177,7 +178,7 @@ export default function LikedCollection() {
                   <div className="added-at-col">
                     <span>{moment(item.added_at).fromNow()}</span>
                   </div>
-                  <div>
+                  <div className="duration">
                     <span>{`${String(
                       moment.utc(duration_ms).format("HH:mm:ss"),
                     ).replace(/^00:/, "")}`}</span>

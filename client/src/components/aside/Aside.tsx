@@ -34,6 +34,7 @@ const Aside = () => {
       collapsible
       collapsed={contextValues?.collapsed}
       collapsedWidth={100}
+      className="!fixed z-[1000]"
     >
       {/* ASIDE MENU */}
       <Menu
@@ -126,11 +127,12 @@ const Aside = () => {
             placeholder="Search in your library..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            allowClear
           />
         )}
 
         {/* MAPPED DATA */}
-        <div className="">
+        <div className="my-4 h-[550px] overflow-scroll overflow-x-hidden pr-1">
           {asideType === "playlist" ? (
             <AsidePlaylists searchValue={searchValue} />
           ) : asideType === "album" ? (
