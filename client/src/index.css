@@ -20,22 +20,18 @@ html {
   margin: 0 auto;
 }
 
-.sider::-webkit-scrollbar {
-  width: 0px;
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-.sider::-webkit-scrollbar-thumb {
-  background-color: transparent;
+::-webkit-scrollbar-thumb {
+  background-color: gray;
 }
 
-.sider {
-  scrollbar-width: thin;
+::-moz-scrollbar {
+  width: 5px;
 }
 
-.sider::-moz-scrollbar {
-  width: 0px;
-}
-
-.sider::-moz-scrollbar-thumb {
-  background-color: transparent;
+::-moz-scrollbar-thumb {
+  background-color: gray;
 }

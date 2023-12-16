@@ -2,15 +2,8 @@ import { useEffect, useState } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
 import noImg from "/no-img.png";
 import { v4 as uuidv4 } from "uuid";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-import Card from "../components/card/Card";
 import { Link } from "react-router-dom";
+import RowSlider from "../components/rowSlider/RowSlider";
 
 const Home = () => {
   const contextValues = SpotifyContext();
@@ -18,6 +11,9 @@ const Home = () => {
     SpotifyApi.PlayHistoryObject[] | undefined
   >();
   const [seeds, setSeeds] = useState<{ seed_tracks: string[] | undefined }>();
+  const [recommendedTracks, setRecommendedTracks] = useState<
+    SpotifyApi.RecommendationsFromSeedsResponse | undefined
+  >();
 
   useEffect(() => {
     async function getSeeds() {
@@ -40,14 +36,36 @@ const Home = () => {
     getSeeds();
   }, [contextValues?.spotify]);
 
+  useEffect(() => {
+    async function getRecommendations(seeds: {
+      seed_tracks: string[] | undefined;
+    }) {
+      try {
+        const fetchedRecommendations =
+          await contextValues?.spotify.getRecommendations(seeds);
+        setRecommendedTracks(fetchedRecommendations);
+      } catch (error) {
+        console.log("error fetching recommendations: ", error);
+      }
+    }
+
+    if (seeds) getRecommendations(seeds);
+  }, [seeds, contextValues?.spotify]);
+
   return (
     <div className="Home">
       <h3 className="text-2xl md:text-4xl">
         Welcome back {contextValues?.currentUser?.display_name}
       </h3>
       <TopTracks />
-      <RecentlyPlayed data={recentlyPlayed} />
-      <Recommendations seeds={seeds} />
+      <RowSlider
+        title={"recently played"}
+        playerHistoryObject={recentlyPlayed}
+      />
+      <RowSlider
+        title="recommendations"
+        recommendationsFromSeeds={recommendedTracks}
+      />
     </div>
   );
 };
@@ -97,167 +115,6 @@ function TopTracks() {
             ))
             .splice(0, 6)}
       </div>
-    </div>
-  );
-}
-
-function Recommendations({
-  seeds,
-}: {
-  seeds: { seed_tracks: string[] | undefined } | undefined;
-}) {
-  const contextValues = SpotifyContext();
-  const [recommendedTracks, setRecommendedTracks] = useState<
-    SpotifyApi.RecommendationsFromSeedsResponse | undefined
-  >();
-  const [slidesPerView, setSlidesPerView] = useState<number>(7.6);
-
-  useEffect(() => {
-    async function getRecommendations(seeds: {
-      seed_tracks: string[] | undefined;
-    }) {
-      try {
-        const fetchedRecommendations =
-          await contextValues?.spotify.getRecommendations(seeds);
-        // setRecommendedTracks(fetchedRecommendations?.tracks);
-        setRecommendedTracks(fetchedRecommendations);
-      } catch (error) {
-        console.log("error fetching recommendations: ", error);
-      }
-    }
-
-    if (seeds) getRecommendations(seeds);
-  }, [seeds, contextValues?.spotify]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-
-      // Update slidesPerView based on screen width
-      if (screenWidth >= 1500) {
-        setSlidesPerView(7.6);
-      } else if (screenWidth >= 1024) {
-        setSlidesPerView(5.6);
-      } else if (screenWidth >= 768) {
-        setSlidesPerView(4);
-      } else if (screenWidth >= 480) {
-        setSlidesPerView(3.3);
-      } else {
-        setSlidesPerView(2.2);
-      }
-    };
-
-    // Call handleResize when the component mounts
-    handleResize();
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <div>
-      <h3 className="my-2 text-xl capitalize">recommended</h3>
-      <Swiper
-        slidesPerView={slidesPerView}
-        spaceBetween={20}
-        freeMode={true}
-        modules={[FreeMode]}
-        className="mySwiper"
-      >
-        {recommendedTracks &&
-          recommendedTracks.tracks.map((item) => {
-            return (
-              <SwiperSlide key={uuidv4()} className="py-2">
-                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                {/* @ts-ignore */}
-                <Link to={`/album/${item.album.id}`}>
-                  <Card
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    image={item.album.images[0].url}
-                    name={item.name}
-                    nameSecondary={item.artists[0].name}
-                  />
-                </Link>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
-    </div>
-  );
-}
-
-function RecentlyPlayed({
-  data,
-}: {
-  data: SpotifyApi.PlayHistoryObject[] | undefined;
-}) {
-  const [slidesPerView, setSlidesPerView] = useState<number>(7.6);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-
-      // Update slidesPerView based on screen width
-      if (screenWidth >= 1500) {
-        setSlidesPerView(7.6);
-      } else if (screenWidth >= 1024) {
-        setSlidesPerView(5.6);
-      } else if (screenWidth >= 768) {
-        setSlidesPerView(4);
-      } else if (screenWidth >= 480) {
-        setSlidesPerView(3.3);
-      } else {
-        setSlidesPerView(2.2);
-      }
-    };
-
-    // Call handleResize when the component mounts
-    handleResize();
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return (
-    <div>
-      <h3 className="my-2 text-xl capitalize">recently played</h3>
-      <Swiper
-        slidesPerView={slidesPerView}
-        spaceBetween={20}
-        freeMode={true}
-        modules={[FreeMode]}
-        className="mySwiper"
-      >
-        {data &&
-          data.map((item) => {
-            return (
-              <SwiperSlide key={uuidv4()} className="py-2">
-                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                {/* @ts-ignore */}
-                <Link to={`/album/${item.track.album.id}`}>
-                  <Card
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    image={item.track.album.images[0].url}
-                    name={item.track.name}
-                    nameSecondary={item.track.artists[0].name}
-                  />
-                </Link>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
     </div>
   );
 }

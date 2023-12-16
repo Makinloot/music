@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SpotifyContext } from "../context/SpotifyContext";
 import noImg from "/no-img.png";
 import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import TrackRow from "../components/trackRow/TrackRow";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "antd";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-import Card from "../components/card/Card";
 import { SearchArtists } from "../components/collection/SearchCollection";
+import RowSlider from "../components/rowSlider/RowSlider";
 
 interface ArtistDataTypes {
   artist: SpotifyApi.SingleArtistResponse | undefined;
@@ -28,7 +21,6 @@ const Artist = () => {
   const { id } = useParams();
   const [artistData, setArtistData] = useState<ArtistDataTypes | undefined>();
   const [moreTracks, setMoreTracks] = useState(false);
-  const [slidesPerView, setSlidesPerView] = useState<number>(7.6);
 
   useEffect(() => {
     async function getArtistData(id: string) {
@@ -57,36 +49,6 @@ const Artist = () => {
     if (id) getArtistData(id);
     window.scrollTo(0, 0);
   }, [contextValues?.spotify, id]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-
-      // Update slidesPerView based on screen width
-      if (screenWidth >= 1500) {
-        setSlidesPerView(7.6);
-      } else if (screenWidth >= 1024) {
-        setSlidesPerView(5.6);
-      } else if (screenWidth >= 768) {
-        setSlidesPerView(4);
-      } else if (screenWidth >= 480) {
-        setSlidesPerView(3.3);
-      } else {
-        setSlidesPerView(2.2);
-      }
-    };
-
-    // Call handleResize when the component mounts
-    handleResize();
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   return (
     <div className="Artist">
@@ -123,31 +85,15 @@ const Artist = () => {
           {moreTracks ? "Show less" : "Show more"}
         </Button>
       </div>
-      <div className="Artist-albums">
-        <h3 className="my-2 text-xl capitalize">albums</h3>
-        <Swiper
-          slidesPerView={slidesPerView}
-          spaceBetween={20}
-          freeMode={true}
-          modules={[FreeMode]}
-          className="mySwiper"
-        >
-          {artistData?.albums &&
-            artistData.albums.items.map((item) => {
-              return (
-                <SwiperSlide key={uuidv4()} className="py-2">
-                  <Link to={`/album/${item.id}`}>
-                    <Card
-                      image={item.images[0].url}
-                      name={item.name}
-                      nameSecondary={item.artists[0].name}
-                    />
-                  </Link>
-                </SwiperSlide>
-              );
-            })}
-        </Swiper>
-      </div>
+
+      {artistData?.albums && (
+        <RowSlider
+          title="albums"
+          url={`/discography/${artistData?.artist?.id}`}
+          artistAlbumResponse={artistData?.albums}
+        />
+      )}
+
       <div className="Artist-related-artists">
         <SearchArtists
           artists={artistData?.relatedArtists?.artists.slice(0, 8)}

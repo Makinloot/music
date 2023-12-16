@@ -12,6 +12,7 @@ import Genre from "../../pages/Genre";
 import Album from "../../pages/Album";
 import Artist from "../../pages/Artist";
 import Playlist from "../../pages/Playlist";
+import Discography from "../../pages/Discography";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
@@ -67,6 +68,7 @@ const Main: React.FC = () => {
               <Route path="/album/:id" element={<Album />} />
               <Route path="/artist/:id" element={<Artist />} />
               <Route path="/playlist/:id" element={<Playlist />} />
+              <Route path="/discography/:id" element={<Discography />} />
             </Routes>
           </Content>
         </motion.div>

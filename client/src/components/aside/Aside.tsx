@@ -130,7 +130,7 @@ const Aside = () => {
         </div>
       </div>
       <div
-        className={`Library relative overflow-scroll overflow-x-hidden ${
+        className={`Library custom-scrollbar relative overflow-scroll overflow-x-hidden ${
           contextValues?.collapsed
             ? "hide-scrollbar h-[calc(100%-200px)] px-[4px]"
             : "h-[calc(100%-300px)] px-[2px]"

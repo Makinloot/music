@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SpotifyContext } from "../context/SpotifyContext";
 import moment from "moment";
 import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
 import TrackRow from "../components/trackRow/TrackRow";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-import Card from "../components/card/Card";
+import RowSlider from "../components/rowSlider/RowSlider";
 
 const Album = () => {
   const contextValues = SpotifyContext();
@@ -21,6 +14,9 @@ const Album = () => {
     SpotifyApi.SingleAlbumResponse | undefined
   >();
   const [artist, setArtist] = useState<string | undefined>("");
+  const [albums, setAlbums] = useState<
+    SpotifyApi.AlbumObjectSimplified[] | undefined
+  >();
 
   useEffect(() => {
     async function getAlbum(id: string) {
@@ -34,6 +30,24 @@ const Album = () => {
     }
     if (id) getAlbum(id);
   }, [contextValues?.spotify, id]);
+
+  useEffect(() => {
+    async function getAlbumsByArtist(id: string) {
+      try {
+        const fetchedAlbums = await contextValues?.spotify.getArtistAlbums(id, {
+          limit: 20,
+        });
+        const filterAlbums = fetchedAlbums?.items.filter(
+          (item) => item.album_group === "album" && item.id !== id,
+        );
+        setAlbums(filterAlbums);
+      } catch (error) {
+        console.log("error fetching albums by artist: ", error);
+      }
+    }
+
+    if (artist) getAlbumsByArtist(artist);
+  }, [artist, contextValues?.spotify, id]);
 
   return (
     <div className="Album">
@@ -90,128 +104,13 @@ const Album = () => {
           );
         })}
       </div>
-      <MoreAlbumsByArtist artist={artist} currentAlbum={id} />
+      <RowSlider
+        title="albums"
+        url={`/discography/${artist}`}
+        albumsObjectSimplified={albums}
+      />
     </div>
   );
 };
-
-function MoreAlbumsByArtist({
-  artist,
-  currentAlbum,
-}: {
-  artist: string | undefined;
-  currentAlbum: string | undefined;
-}) {
-  const contextValues = SpotifyContext();
-  const [slidesPerView, setSlidesPerView] = useState<number>(7.6);
-  const [albums, setAlbums] = useState<{
-    albums: SpotifyApi.AlbumObjectSimplified[] | undefined;
-    singles: SpotifyApi.AlbumObjectSimplified[] | undefined;
-  }>();
-
-  useEffect(() => {
-    async function getAlbumsByArtist(id: string) {
-      try {
-        const fetchedAlbums = await contextValues?.spotify.getArtistAlbums(id, {
-          limit: 50,
-        });
-        const filterAlbums = fetchedAlbums?.items.filter(
-          (item) => item.album_group === "album" && item.id !== currentAlbum,
-        );
-        const filterSingles = fetchedAlbums?.items.filter(
-          (item) => item.album_group === "single" && item.id !== currentAlbum,
-        );
-        setAlbums({
-          albums: filterAlbums,
-          singles: filterSingles,
-        });
-      } catch (error) {
-        console.log("error fetching albums by artist: ", error);
-      }
-    }
-
-    if (artist) getAlbumsByArtist(artist);
-  }, [artist, contextValues?.spotify, currentAlbum]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-
-      // Update slidesPerView based on screen width
-      if (screenWidth >= 1500) {
-        setSlidesPerView(7.6);
-      } else if (screenWidth >= 1024) {
-        setSlidesPerView(5.6);
-      } else if (screenWidth >= 768) {
-        setSlidesPerView(4);
-      } else if (screenWidth >= 480) {
-        setSlidesPerView(3.3);
-      } else {
-        setSlidesPerView(2.2);
-      }
-    };
-
-    // Call handleResize when the component mounts
-    handleResize();
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  function AlbumRow({
-    name,
-    data,
-  }: {
-    name: string;
-    data: SpotifyApi.AlbumObjectSimplified[] | undefined;
-  }) {
-    return (
-      <div className="my-12">
-        <h3 className="my-2 text-xl capitalize">{name}</h3>
-        <Swiper
-          slidesPerView={slidesPerView}
-          spaceBetween={20}
-          freeMode={true}
-          modules={[FreeMode]}
-          className="mySwiper"
-        >
-          {data &&
-            data.map((item) => {
-              return (
-                <SwiperSlide key={uuidv4()} className="py-2">
-                  <Link
-                    to={`/album/${item.id}`}
-                    onClick={() => window.scrollTo(0, 0)}
-                  >
-                    <Card
-                      image={item.images[0].url}
-                      name={item.name}
-                      nameSecondary={item.artists[0].name}
-                    />
-                  </Link>
-                </SwiperSlide>
-              );
-            })}
-        </Swiper>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {albums?.albums && albums.albums.length > 0 && (
-        <AlbumRow name={"Albums"} data={albums?.albums} />
-      )}
-      {albums?.singles && albums.singles.length > 0 && (
-        <AlbumRow name={"Singles"} data={albums?.singles} />
-      )}
-    </div>
-  );
-}
 
 export default Album;
