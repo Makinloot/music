@@ -5,6 +5,7 @@ import { useState } from "react";
 import TrackRow from "../trackRow/TrackRow";
 import TrackRowHeading from "../trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
 
 export default function SearchCollection({ value }: { value: string }) {
   const { searchData } = useSearch(value, 50);
@@ -107,20 +108,24 @@ export function SearchAlbums({
     <div className="albums-container my-8">
       <span className="text-xl">Albums</span>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {albums?.map((albums) => (
-          <div key={uuidv4()} className="my-4 flex flex-col">
+        {albums?.map((album) => (
+          <Link
+            to={`/album/${album.id}`}
+            key={uuidv4()}
+            className="my-4 flex flex-col"
+          >
             <img
               className="w-full rounded-md object-cover"
-              src={albums?.images[0]?.url || noImg}
-              alt={albums?.name}
+              src={album?.images[0]?.url || noImg}
+              alt={album?.name}
             />
             <div className="mt-2 w-full">
-              <p className="truncate text-xl">{albums?.name}</p>
+              <p className="truncate text-xl">{album?.name}</p>
               <p className="truncate text-lg opacity-70">
-                {albums?.artists[0]?.name}
+                {album?.artists[0]?.name}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -135,10 +140,14 @@ export function SearchArtists({
 }) {
   return (
     <div className="albums-container my-8">
-      <span className="text-xl">Albums</span>
+      <span className="text-xl">Artists</span>
       <div className="flex flex-wrap justify-between gap-3">
         {artists?.map((artist) => (
-          <div key={uuidv4()} className="my-4 flex flex-col">
+          <Link
+            to={`/artist/${artist.id}`}
+            key={uuidv4()}
+            className="my-4 flex flex-col"
+          >
             <div className="h-44 w-44">
               <img
                 className="h-full w-full object-cover"
@@ -150,7 +159,7 @@ export function SearchArtists({
               <p className="truncate text-lg">{artist?.name}</p>
               <p className="text-md truncate opacity-70">{artist?.name}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

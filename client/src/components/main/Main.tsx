@@ -10,6 +10,8 @@ import Search from "../../pages/Search";
 import Home from "../../pages/Home";
 import Genre from "../../pages/Genre";
 import Album from "../../pages/Album";
+import Artist from "../../pages/Artist";
+import Playlist from "../../pages/Playlist";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
@@ -63,6 +65,8 @@ const Main: React.FC = () => {
               <Route path="/liked" element={<Liked />} />
               <Route path="/genre/:id" element={<Genre />} />
               <Route path="/album/:id" element={<Album />} />
+              <Route path="/artist/:id" element={<Artist />} />
+              <Route path="/playlist/:id" element={<Playlist />} />
             </Routes>
           </Content>
         </motion.div>

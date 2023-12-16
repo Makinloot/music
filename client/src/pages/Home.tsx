@@ -10,6 +10,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import Card from "../components/card/Card";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const contextValues = SpotifyContext();
@@ -79,7 +80,8 @@ function TopTracks() {
         {topTracks &&
           topTracks
             .map((item) => (
-              <div
+              <Link
+                to={`/album/${item.album.id}`}
                 key={uuidv4()}
                 className="flex items-center overflow-hidden rounded-md bg-gray-400/30"
               >
@@ -91,7 +93,7 @@ function TopTracks() {
                 <strong className="mx-2 truncate lg:text-lg">
                   {item.name}
                 </strong>
-              </div>
+              </Link>
             ))
             .splice(0, 6)}
       </div>
@@ -171,13 +173,17 @@ function Recommendations({
           recommendedTracks.tracks.map((item) => {
             return (
               <SwiperSlide key={uuidv4()} className="py-2">
-                <Card
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  image={item.album.images[0].url}
-                  name={item.name}
-                  nameSecondary={item.artists[0].name}
-                />
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <Link to={`/album/${item.album.id}`}>
+                  <Card
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    image={item.album.images[0].url}
+                    name={item.name}
+                    nameSecondary={item.artists[0].name}
+                  />
+                </Link>
               </SwiperSlide>
             );
           })}
@@ -237,13 +243,17 @@ function RecentlyPlayed({
           data.map((item) => {
             return (
               <SwiperSlide key={uuidv4()} className="py-2">
-                <Card
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  image={item.track.album.images[0].url}
-                  name={item.track.name}
-                  nameSecondary={item.track.artists[0].name}
-                />
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <Link to={`/album/${item.track.album.id}`}>
+                  <Card
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    image={item.track.album.images[0].url}
+                    name={item.track.name}
+                    nameSecondary={item.track.artists[0].name}
+                  />
+                </Link>
               </SwiperSlide>
             );
           })}

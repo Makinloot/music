@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { SpotifyContext } from "../context/SpotifyContext";
 import moment from "moment";
 import TrackRowHeading from "../components/trackRow/TrackRowHeading";
@@ -119,7 +119,7 @@ function MoreAlbumsByArtist({
           (item) => item.album_group === "album" && item.id !== currentAlbum,
         );
         const filterSingles = fetchedAlbums?.items.filter(
-          (item) => item.album_group === "single",
+          (item) => item.album_group === "single" && item.id !== currentAlbum,
         );
         setAlbums({
           albums: filterAlbums,
@@ -131,7 +131,7 @@ function MoreAlbumsByArtist({
     }
 
     if (artist) getAlbumsByArtist(artist);
-  }, [artist, contextValues?.spotify]);
+  }, [artist, contextValues?.spotify, currentAlbum]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -184,11 +184,16 @@ function MoreAlbumsByArtist({
             data.map((item) => {
               return (
                 <SwiperSlide key={uuidv4()} className="py-2">
-                  <Card
-                    image={item.images[0].url}
-                    name={item.name}
-                    nameSecondary={item.artists[0].name}
-                  />
+                  <Link
+                    to={`/album/${item.id}`}
+                    onClick={() => window.scrollTo(0, 0)}
+                  >
+                    <Card
+                      image={item.images[0].url}
+                      name={item.name}
+                      nameSecondary={item.artists[0].name}
+                    />
+                  </Link>
                 </SwiperSlide>
               );
             })}

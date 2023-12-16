@@ -29,6 +29,7 @@ const AsidePlaylists: React.FC<{ searchValue: string }> = ({ searchValue }) => {
         searchedData.length > 0 ? (
           searchedData.map((item) => (
             <AsideList
+              url={`/playlist/${item.id}`}
               key={uuidv4()}
               image={item.images[0].url}
               name={item.name}
@@ -43,6 +44,7 @@ const AsidePlaylists: React.FC<{ searchValue: string }> = ({ searchValue }) => {
       ) : contextValues?.savedPlaylists ? (
         contextValues?.savedPlaylists?.map((item) => (
           <AsideList
+            url={`/playlist/${item.id}`}
             key={uuidv4()}
             image={item.images[0].url}
             name={item.name}
