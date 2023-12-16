@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import moment from "moment";
-import { ClockCircleOutlined } from "@ant-design/icons";
 import { Input } from "antd";
 import { SpotifyContext } from "../../context/SpotifyContext";
-import { v4 as uuidv4 } from "uuid";
 import { IoPauseCircle, IoPlayCircle } from "react-icons/io5";
+import TrackRow from "../trackRow/TrackRow";
+import TrackRowHeading from "../trackRow/TrackRowHeading";
+import { v4 as uuidv4 } from "uuid";
 
 export default function LikedCollection() {
   const contextValues = SpotifyContext();
@@ -81,62 +81,24 @@ export default function LikedCollection() {
           allowClear
         />
       </div>
-      <div className="collection-heading grid-cols mb-2 border-b-[1px] p-2">
-        <span>#</span>
-        <span>Title</span>
-        <span className="album-name">Album</span>
-        <span className="date-added added-at-col">Date added</span>
-        <span className="duration">
-          <ClockCircleOutlined />
-        </span>
-      </div>
-      <div
-        id="scrollableDiv"
-        className="collection absolutew-full"
-        // className="collection absolute h-[calc(100%-145px)] w-full overflow-scroll overflow-x-hidden"
-      >
+      <TrackRowHeading added_at />
+      <div id="scrollableDiv" className="collection absolutew-full">
         <div className="collection-body">
           {searchedData !== undefined ? (
             searchedData.length > 0 ? (
               searchedData.map((item, index) => {
                 const { album, name, artists, duration_ms } = item.track;
                 return (
-                  <div
-                    className="grid-cols items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600"
+                  <TrackRow
                     key={uuidv4()}
-                  >
-                    <div>
-                      <span>{index + 1}</span>
-                    </div>
-                    <div className="flex items-center pr-4">
-                      <div className="max-w-[44px]">
-                        <img
-                          className="rounded-md"
-                          src={album.images[0].url}
-                          alt={name}
-                        />
-                      </div>
-                      <div className="ml-2 flex flex-col truncate">
-                        <span className="truncate">{name}</span>
-                        <span className="truncate opacity-70">
-                          {artists[0].name}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="album-name truncate pr-4">
-                      <span className="truncate">{album.name}</span>
-                    </div>
-                    <div className="added-at-col">
-                      <span>{moment(item.added_at).fromNow()}</span>
-                    </div>
-                    <div className="duration">
-                      <span>{`${String(
-                        moment.duration(duration_ms).minutes(),
-                      ).padStart(2, "0")}:${String(
-                        moment.duration(duration_ms).seconds(),
-                      ).padStart(2, "0")}`}</span>
-                    </div>
-                  </div>
+                    index={index}
+                    added_at={item.added_at}
+                    albumName={album.name}
+                    artistName={artists[0].name}
+                    duration={duration_ms}
+                    image={album.images[0].url}
+                    name={name}
+                  />
                 );
               })
             ) : (
@@ -150,40 +112,16 @@ export default function LikedCollection() {
             contextValues.likedTracks.map((item, index) => {
               const { album, name, artists, duration_ms } = item.track;
               return (
-                <div
-                  className="grid-cols items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600"
+                <TrackRow
                   key={uuidv4()}
-                >
-                  <div>
-                    <span>{index + 1}</span>
-                  </div>
-                  <div className="flex items-center pr-4">
-                    <div className="max-w-[44px]">
-                      <img
-                        className="rounded-md"
-                        src={album.images[0].url}
-                        alt={name}
-                      />
-                    </div>
-                    <div className="ml-2 flex flex-col truncate">
-                      <span className="truncate">{name}</span>
-                      <span className="truncate opacity-70">
-                        {artists[0].name}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="album-name truncate pr-4">
-                    <span className="truncate">{album.name}</span>
-                  </div>
-                  <div className="added-at-col">
-                    <span>{moment(item.added_at).fromNow()}</span>
-                  </div>
-                  <div className="duration">
-                    <span>{`${String(
-                      moment.utc(duration_ms).format("HH:mm:ss"),
-                    ).replace(/^00:/, "")}`}</span>
-                  </div>
-                </div>
+                  index={index}
+                  added_at={item.added_at}
+                  albumName={album.name}
+                  artistName={artists[0].name}
+                  duration={duration_ms}
+                  image={album.images[0].url}
+                  name={name}
+                />
               );
             })
           ) : null}

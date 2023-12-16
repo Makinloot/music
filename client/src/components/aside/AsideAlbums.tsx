@@ -30,6 +30,7 @@ const AsideAlbums: React.FC<{ searchValue: string }> = ({ searchValue }) => {
           searchedData.map((item) => (
             <AsideList
               key={uuidv4()}
+              url={`/album/${item.album.id}`}
               image={item.album.images[0].url}
               name={item.album.name}
               description={item.album.artists[0].name}
@@ -44,6 +45,7 @@ const AsideAlbums: React.FC<{ searchValue: string }> = ({ searchValue }) => {
         contextValues?.savedAlbums?.map((item) => (
           <AsideList
             key={uuidv4()}
+            url={`/album/${item.album.id}`}
             image={item.album.images[0].url}
             name={item.album.name}
             description={item.album.artists[0].name}

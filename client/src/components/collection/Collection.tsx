@@ -12,4 +12,5 @@ export default function Collection({
   if (type === "liked") return <LikedCollection />;
   else if (type === "search")
     return <SearchCollection value={searchValue || ""} />;
+  else null;
 }

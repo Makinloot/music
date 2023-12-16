@@ -7,7 +7,7 @@ const Player = ({ accessToken }: { accessToken: string }) => {
 
   useEffect(() => {
     contextValues?.setPlay(true);
-  }, [contextValues?.trackUris]);
+  }, [contextValues, contextValues?.trackUris]);
 
   return (
     <div className="player fixed bottom-0 w-full">

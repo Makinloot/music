@@ -1,10 +1,10 @@
 import useSearch from "../../hooks/useSearch";
-import { ClockCircleOutlined } from "@ant-design/icons";
 import { Button, Spin } from "antd";
-import moment from "moment";
-import { v4 as uuidv4 } from "uuid";
 import noImg from "/no-img.png";
 import { useState } from "react";
+import TrackRow from "../trackRow/TrackRow";
+import TrackRowHeading from "../trackRow/TrackRowHeading";
+import { v4 as uuidv4 } from "uuid";
 
 export default function SearchCollection({ value }: { value: string }) {
   const { searchData } = useSearch(value, 50);
@@ -71,67 +71,34 @@ export default function SearchCollection({ value }: { value: string }) {
 }
 
 // display tracks
-function SearchTracks({
+export function SearchTracks({
   tracks,
 }: {
   tracks: SpotifyApi.TrackObjectFull[] | undefined;
 }) {
   return (
     <div className="tracks-container my-8">
-      <div className="collection-heading grid-cols-search mb-2 border-b-[1px] p-2">
-        <span>#</span>
-        <span>Title</span>
-        <span className="album-name">Album</span>
-        <span className="song-duration">
-          <ClockCircleOutlined />
-        </span>
-      </div>
-      <div className="">
-        {tracks?.map((item, index) => {
-          const { album, name, artists, duration_ms } = item;
-          return (
-            <div
-              className="grid-cols-search items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600"
-              key={uuidv4()}
-            >
-              <div>
-                <span>{index + 1}</span>
-              </div>
-              <div className="flex items-center pr-4">
-                <div className="max-w-[44px]">
-                  <img
-                    className="rounded-md"
-                    src={album?.images[0]?.url || noImg}
-                    alt={name}
-                  />
-                </div>
-                <div className="ml-2 flex flex-col truncate">
-                  <span className="truncate">{name}</span>
-                  <span className="truncate opacity-70">
-                    {artists[0]?.name}
-                  </span>
-                </div>
-              </div>
-              <div className="album-name truncate pr-4">
-                <span className="truncate">{album?.name}</span>
-              </div>
-              <div className="song-duration">
-                <span>{`${String(
-                  moment.duration(duration_ms).minutes(),
-                ).padStart(2, "0")}:${String(
-                  moment.duration(duration_ms).seconds(),
-                ).padStart(2, "0")}`}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <TrackRowHeading />
+      {tracks?.map((item, index) => {
+        const { album, name, artists, duration_ms } = item;
+        return (
+          <TrackRow
+            key={uuidv4()}
+            index={index}
+            albumName={album.name}
+            artistName={artists[0].name}
+            duration={duration_ms}
+            image={album?.images[0]?.url}
+            name={name}
+          />
+        );
+      })}
     </div>
   );
 }
 
 // display albums
-function SearchAlbums({
+export function SearchAlbums({
   albums,
 }: {
   albums: SpotifyApi.AlbumObjectSimplified[] | undefined;
@@ -141,7 +108,7 @@ function SearchAlbums({
       <span className="text-xl">Albums</span>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {albums?.map((albums) => (
-          <div key={albums?.id} className="my-4 flex flex-col">
+          <div key={uuidv4()} className="my-4 flex flex-col">
             <img
               className="w-full rounded-md object-cover"
               src={albums?.images[0]?.url || noImg}
@@ -161,7 +128,7 @@ function SearchAlbums({
 }
 
 // display artists
-function SearchArtists({
+export function SearchArtists({
   artists,
 }: {
   artists: SpotifyApi.ArtistObjectFull[] | undefined;
@@ -171,10 +138,10 @@ function SearchArtists({
       <span className="text-xl">Albums</span>
       <div className="flex flex-wrap justify-between gap-3">
         {artists?.map((artist) => (
-          <div key={artist?.id} className="my-4 flex flex-col">
+          <div key={uuidv4()} className="my-4 flex flex-col">
             <div className="h-44 w-44">
               <img
-                className="object-cover"
+                className="h-full w-full object-cover"
                 src={artist?.images[0]?.url || noImg}
                 alt={artist?.name}
               />

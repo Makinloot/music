@@ -1,15 +1,18 @@
 import React from "react";
 import { SpotifyContext } from "../../context/SpotifyContext";
+import { Link } from "react-router-dom";
 
 const AsideList: React.FC<{
   image: string;
   name: string;
   description?: string;
   artist?: boolean;
-}> = ({ image, name, description, artist }) => {
+  url: string;
+}> = ({ image, name, description, artist, url }) => {
   const contextValues = SpotifyContext();
   return (
-    <div
+    <Link
+      to={url}
       className={`flex items-center ${
         contextValues?.collapsed && "justify-center"
       } my-4 px-[2px]`}
@@ -32,7 +35,7 @@ const AsideList: React.FC<{
           <span className="truncate opacity-70">{description}</span>
         </div>
       )}
-    </div>
+    </Link>
   );
 };
 

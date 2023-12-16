@@ -8,6 +8,8 @@ import Liked from "../../pages/Liked";
 import Aside from "../aside/Aside";
 import Search from "../../pages/Search";
 import Home from "../../pages/Home";
+import Genre from "../../pages/Genre";
+import Album from "../../pages/Album";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
@@ -33,8 +35,6 @@ const Main: React.FC = () => {
       }`}
     >
       <Aside />
-      {/* <Layout className="ml-[200px]"> */}
-
       <Layout>
         <motion.div
           initial={{
@@ -61,6 +61,8 @@ const Main: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
               <Route path="/liked" element={<Liked />} />
+              <Route path="/genre/:id" element={<Genre />} />
+              <Route path="/album/:id" element={<Album />} />
             </Routes>
           </Content>
         </motion.div>

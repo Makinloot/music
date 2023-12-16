@@ -1,0 +1,19 @@
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.hide-scrollbar {
+  scrollbar-width: thin;
+}
+
+.hide-scrollbar::-moz-scrollbar {
+  width: 0px;
+}
+
+.hide-scrollbar::-moz-scrollbar-thumb {
+  background-color: transparent;
+}

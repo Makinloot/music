@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
 import noImg from "/no-img.png";
-
+import { v4 as uuidv4 } from "uuid";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 
@@ -80,7 +80,7 @@ function TopTracks() {
           topTracks
             .map((item) => (
               <div
-                key={item.id}
+                key={uuidv4()}
                 className="flex items-center overflow-hidden rounded-md bg-gray-400/30"
               >
                 <img
@@ -169,9 +169,8 @@ function Recommendations({
       >
         {recommendedTracks &&
           recommendedTracks.tracks.map((item) => {
-            console.log("item", item);
             return (
-              <SwiperSlide key={item.id} className="py-2">
+              <SwiperSlide key={uuidv4()} className="py-2">
                 <Card
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
@@ -236,9 +235,8 @@ function RecentlyPlayed({
       >
         {data &&
           data.map((item) => {
-            console.log("item", item);
             return (
-              <SwiperSlide key={item.track.id} className="py-2">
+              <SwiperSlide key={uuidv4()} className="py-2">
                 <Card
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
