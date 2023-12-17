@@ -6,8 +6,9 @@ import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import TrackRow from "../components/trackRow/TrackRow";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
-import Skeleton from "react-loading-skeleton";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
+import CollectionHeader from "../components/collectionHeader/CollectionHeader";
+import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
 
 const Playlist = () => {
   const contextValues = SpotifyContext();
@@ -75,54 +76,43 @@ const Playlist = () => {
     if (playlist?.owner.id) getPlaylistOwner(playlist.owner.id);
   }, [contextValues?.spotify, playlist?.owner?.id]);
 
+  function sumTotalTracksDuration() {
+    const totalTracksDuration = moment
+      .utc(
+        playlistTracks?.reduce(
+          (total, track) => total + track.track.duration_ms,
+          0,
+        ),
+      )
+      .format(
+        moment
+          .duration(
+            playlistTracks?.reduce(
+              (total, track) => total + track.track.duration_ms,
+              0,
+            ),
+          )
+          .hours() >= 1
+          ? "h [hours], m [minutes], s [seconds]"
+          : "m [minutes], s [seconds]",
+      );
+
+    return totalTracksDuration;
+  }
+
   return (
     <div className="Playlist">
       {playlistLoading ? (
-        <PlaylistHeaderSkeleton />
+        <CollectionHeaderSkeleton />
       ) : (
-        <div className="Playlist-header flex flex-row items-end justify-start">
-          <img
-            className="h-[300px] w-[300px] object-cover"
-            src={playlist?.images[0].url || noImg}
-            alt={playlist?.name}
-          />
-          <div className="ml-2 flex flex-col">
-            <h2 className="text-5xl">{playlist?.name}</h2>
-            <div className="ml-[3px] mt-2 flex flex-wrap items-center justify-start gap-1">
-              {owner?.images && (
-                <img
-                  className="h-12 w-12 rounded-full"
-                  src={owner?.images[0].url || noImg}
-                  alt={playlist?.owner.display_name}
-                />
-              )}
-              <h3>{playlist?.owner?.display_name}</h3>•
-              <span>{playlist?.tracks?.total} songs</span>•
-              {/* display duration of playlist */}
-              <span>
-                {moment
-                  .utc(
-                    playlistTracks?.reduce(
-                      (total, track) => total + track.track.duration_ms,
-                      0,
-                    ),
-                  )
-                  .format(
-                    moment
-                      .duration(
-                        playlistTracks?.reduce(
-                          (total, track) => total + track.track.duration_ms,
-                          0,
-                        ),
-                      )
-                      .hours() >= 1
-                      ? "h [hours], m [minutes], s [seconds]"
-                      : "m [minutes], s [seconds]",
-                  )}
-              </span>
-            </div>
-          </div>
-        </div>
+        <CollectionHeader
+          img={playlist?.images[0].url || noImg}
+          title={playlist?.name}
+          ownerImage={(owner?.images && owner?.images[0].url) || noImg}
+          ownerName={playlist?.owner.display_name}
+          totalTracks={playlist?.tracks?.total}
+          totalTracksDuration={sumTotalTracksDuration()}
+        />
       )}
       <div>
         <TrackRowHeading added_at />
@@ -152,23 +142,5 @@ const Playlist = () => {
     </div>
   );
 };
-
-function PlaylistHeaderSkeleton() {
-  return (
-    <div className="Playlist-header flex flex-row items-end justify-start">
-      <Skeleton
-        className="h-[300px] w-[300px]"
-        baseColor="#202020"
-        highlightColor="#444"
-      />
-      <Skeleton
-        className="ml-2 h-10 w-60 max-w-full"
-        baseColor="#202020"
-        highlightColor="#444"
-        count={2}
-      />
-    </div>
-  );
-}
 
 export default Playlist;

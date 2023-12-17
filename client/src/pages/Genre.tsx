@@ -7,6 +7,7 @@ import {
   SearchTracks,
 } from "../components/collection/SearchCollection";
 import { Button, Spin } from "antd";
+import CollectionHeader from "../components/collectionHeader/CollectionHeader";
 
 const Genre = () => {
   const contextValues = SpotifyContext();
@@ -52,14 +53,7 @@ const Genre = () => {
 
   return (
     <div className="Genre">
-      <div className="Genre-header flex items-end">
-        <img
-          className="max-w-[200px]"
-          src={genre?.icons[0].url}
-          alt={genre?.name}
-        />
-        <h2 className="mb-2 ml-2 text-4xl">{genre?.name}</h2>
-      </div>
+      <CollectionHeader img={genre?.icons[0].url} title={genre?.name} />
       <div className="collection-types mt-8 flex flex-wrap justify-center gap-2 sm:justify-start">
         <Button
           danger={searchType === "tracks" && true}

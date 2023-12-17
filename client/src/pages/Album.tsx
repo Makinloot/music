@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SpotifyContext } from "../context/SpotifyContext";
-import moment from "moment";
 import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
 import TrackRow from "../components/trackRow/TrackRow";
 import RowSlider from "../components/rowSlider/RowSlider";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
-import noImg from "/no-img.png";
-import Skeleton from "react-loading-skeleton";
+import CollectionHeader from "../components/collectionHeader/CollectionHeader";
+import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
+import moment from "moment";
 
 const Album = () => {
   const contextValues = SpotifyContext();
@@ -63,48 +63,43 @@ const Album = () => {
     if (artist) getAlbumsByArtist(artist);
   }, [artist, contextValues?.spotify, id]);
 
+  function sumTotalTracksDuration() {
+    const totalTracksDuration = moment
+      .utc(
+        album?.tracks?.items?.reduce(
+          (total, track) => total + track.duration_ms,
+          0,
+        ),
+      )
+      .format(
+        moment
+          .duration(
+            album?.tracks?.items?.reduce(
+              (total, track) => total + track.duration_ms,
+              0,
+            ),
+          )
+          .hours() >= 1
+          ? "h [hours], m [minutes], s [seconds]"
+          : "m [minutes], s [seconds]",
+      );
+
+    return totalTracksDuration;
+  }
+
   return (
     <div className="Album">
       {artistLoading ? (
-        <AlbumHeaderSkeleton />
+        <CollectionHeaderSkeleton />
       ) : (
-        <div className="album-header flex items-end">
-          <img
-            className="mr-2 max-w-[200px]"
-            src={album?.images[0].url}
-            alt={album?.name}
-          />
-          <div>
-            <h2 className="mb-2 text-4xl">{album?.name}</h2>
-            <div className="flex items-center justify-start gap-1">
-              <h3>{album?.artists[0]?.name}</h3>•
-              <span>{moment(album?.release_date).format("YYYY")}</span>•
-              <span>{album?.tracks.total} songs</span>•
-              {/* display duration of album */}
-              <span>
-                {moment
-                  .utc(
-                    album?.tracks?.items?.reduce(
-                      (total, track) => total + track.duration_ms,
-                      0,
-                    ),
-                  )
-                  .format(
-                    moment
-                      .duration(
-                        album?.tracks?.items?.reduce(
-                          (total, track) => total + track.duration_ms,
-                          0,
-                        ),
-                      )
-                      .hours() >= 1
-                      ? "h [hours], m [minutes], s [seconds]"
-                      : "m [minutes], s [seconds]",
-                  )}
-              </span>
-            </div>
-          </div>
-        </div>
+        <CollectionHeader
+          img={album?.images[0].url}
+          title={album?.name}
+          artist={album?.artists[0].name}
+          releaseDate={album?.release_date}
+          totalTracks={album?.tracks.total}
+          totalTracksDuration={sumTotalTracksDuration()}
+        />
       )}
       <div className="my-4">
         <TrackRowHeading />
@@ -135,26 +130,5 @@ const Album = () => {
     </div>
   );
 };
-
-function AlbumHeaderSkeleton() {
-  return (
-    <div className="album-header flex items-end">
-      <div className="relative">
-        <img className="mr-2 max-w-[200px] opacity-0" src={noImg} />
-        <Skeleton
-          className="absolute inset-0"
-          baseColor="#202020"
-          highlightColor="#444"
-        />
-      </div>
-      <Skeleton
-        className="ml-2 h-7 w-60 max-w-full"
-        baseColor="#202020"
-        highlightColor="#444"
-        count={2}
-      />
-    </div>
-  );
-}
 
 export default Album;

@@ -45,9 +45,10 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string>(
     window.localStorage.getItem("token") || "",
   );
-  const [collapsed, setCollapsed] = useState(
-    localStorage.getItem("menuCollapsed") === "true" ? true : false || false,
-  );
+  const [collapsed, setCollapsed] = useState(true);
+  // const [collapsed, setCollapsed] = useState(
+  //   localStorage.getItem("menuCollapsed") === "true" ? true : false || false,
+  // );
   const [darkMode, setDarkMode] = useState(true);
   const [selectedPage, setSelectedPage] = useState("1");
   const [trackUris, setTrackUris] = useState([""]);

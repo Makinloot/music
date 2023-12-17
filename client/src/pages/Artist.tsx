@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "antd";
 import RowSlider from "../components/rowSlider/RowSlider";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
-import Skeleton from "react-loading-skeleton";
+import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
+import CollectionHeader from "../components/collectionHeader/CollectionHeader";
 
 interface ArtistDataTypes {
   artist: SpotifyApi.SingleArtistResponse | undefined;
@@ -68,21 +69,13 @@ const Artist = () => {
   return (
     <div className="Artist">
       {artistDataLoading.artist ? (
-        <ArtistHeaderSkeleton />
+        <CollectionHeaderSkeleton />
       ) : (
-        <div className="Artist-header flex flex-row items-end justify-start">
-          <img
-            className="h-[300px] w-[300px] object-cover"
-            src={artistData?.artist?.images[0].url || noImg}
-            alt={artistData?.artist?.name}
-          />
-          <div className="ml-2 flex flex-col">
-            <h2 className="text-5xl">{artistData?.artist?.name}</h2>
-            <span className="mt-2">
-              {artistData?.artist?.followers.total.toLocaleString()} Followers
-            </span>
-          </div>
-        </div>
+        <CollectionHeader
+          img={artistData?.artist?.images[0].url || noImg}
+          title={artistData?.artist?.name}
+          followers={artistData?.artist?.followers.total.toLocaleString()}
+        />
       )}
 
       <div className="Artist-top-tracks my-8">
@@ -119,23 +112,5 @@ const Artist = () => {
     </div>
   );
 };
-
-function ArtistHeaderSkeleton() {
-  return (
-    <div className="Artist-header flex flex-row items-end justify-start">
-      <Skeleton
-        className="h-[300px] w-[300px] object-cover"
-        baseColor="#202020"
-        highlightColor="#444"
-      />
-      <Skeleton
-        className="ml-2 h-10 w-60 max-w-full"
-        baseColor="#202020"
-        highlightColor="#444"
-        count={2}
-      />
-    </div>
-  );
-}
 
 export default Artist;
