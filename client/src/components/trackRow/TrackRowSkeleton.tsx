@@ -1,7 +1,9 @@
 import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
+import { SpotifyContext } from "../../context/SpotifyContext";
 
 const TrackRowSkeleton = ({ count }: { count?: number }) => {
+  const contextValues = SpotifyContext();
   const fakeArray = Array.from({ length: count || 10 }, () => ({}));
 
   return (
@@ -10,8 +12,8 @@ const TrackRowSkeleton = ({ count }: { count?: number }) => {
         <Skeleton
           key={uuidv4()}
           className="my-2 h-[68px] w-full"
-          baseColor="#202020"
-          highlightColor="#444"
+          baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+          highlightColor={`${contextValues?.darkMode ? "#444" : "#ffffff"}`}
         />
       ))}
     </div>

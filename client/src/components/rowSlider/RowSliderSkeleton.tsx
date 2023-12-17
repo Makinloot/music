@@ -9,10 +9,12 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./RowSlider.css";
+import { SpotifyContext } from "../../context/SpotifyContext";
 
 const RowSliderSkeleton: React.FC<{ slidesPerView: number }> = ({
   slidesPerView,
 }) => {
+  const contextValues = SpotifyContext();
   const fakeArray = Array.from({ length: 10 }, () => ({}));
   return (
     <div>
@@ -39,14 +41,18 @@ const RowSliderSkeleton: React.FC<{ slidesPerView: number }> = ({
                 />
                 <Skeleton
                   className="absolute inset-0"
-                  baseColor="#202020"
-                  highlightColor="#444"
+                  baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+                  highlightColor={`${
+                    contextValues?.darkMode ? "#444" : "#ffffff"
+                  }`}
                 />
               </div>
               <Skeleton
                 className=""
-                baseColor="#202020"
-                highlightColor="#444"
+                baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+                highlightColor={`${
+                  contextValues?.darkMode ? "#444" : "#ffffff"
+                }`}
               />
             </div>
           </SwiperSlide>

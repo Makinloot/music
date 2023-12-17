@@ -42,13 +42,14 @@ const AsideList: React.FC<{
 };
 
 export function AsideListSkeleton() {
+  const contextValues = SpotifyContext();
   const fakeArray = Array.from({ length: 12 }, () => ({}));
   return fakeArray.map(() => (
     <Skeleton
       key={uuidv4()}
       className="my-2 h-[44px] w-full"
-      baseColor="#202020"
-      highlightColor="#444"
+      baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+      highlightColor={`${contextValues?.darkMode ? "#444" : "#ffffff"}`}
     />
   ));
 }

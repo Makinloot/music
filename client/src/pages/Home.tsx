@@ -121,8 +121,10 @@ function TopTracks() {
             >
               <img className="w-16 opacity-0 lg:w-24" src={noImg} />
               <Skeleton
-                baseColor="#202020"
-                highlightColor="#444"
+                baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+                highlightColor={`${
+                  contextValues?.darkMode ? "#444" : "#ffffff"
+                }`}
                 className="absolute inset-0"
               />
             </div>

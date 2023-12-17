@@ -54,7 +54,7 @@ const Genre = () => {
   return (
     <div className="Genre">
       <CollectionHeader img={genre?.icons[0].url} title={genre?.name} />
-      <div className="collection-types mt-8 flex flex-wrap justify-center gap-2 sm:justify-start">
+      <div className="collection-types mt-8 flex flex-wrap justify-start gap-2">
         <Button
           danger={searchType === "tracks" && true}
           onClick={() => {

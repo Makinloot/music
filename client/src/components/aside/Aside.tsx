@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Input, Layout, Menu } from "antd";
 import { HomeOutlined, SearchOutlined, HeartOutlined } from "@ant-design/icons";
-import { IoLibraryOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import AsideAlbums from "./AsideAlbums";
@@ -36,9 +35,10 @@ const Aside = () => {
       collapsed={contextValues?.collapsed}
       collapsedWidth={smallScreen ? 0 : 100}
       className="!fixed z-[1000] h-screen"
+      style={{ backgroundColor: !contextValues?.darkMode ? "white" : "" }}
     >
       <div
-        className={`${contextValues?.collapsed ? "h-[200px]" : "h-[300px]"}`}
+        className={`${contextValues?.collapsed ? "h-[160px]" : "h-[260px]"}`}
       >
         {/* ASIDE MENU */}
         <Menu
@@ -46,29 +46,34 @@ const Aside = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={[selectedKey]}
+          style={{
+            backgroundColor: !contextValues?.darkMode ? "white" : "",
+            color: !contextValues?.darkMode ? "black" : "",
+          }}
         >
-          <Menu.Item key="1" icon={<HomeOutlined />}>
+          <Menu.Item
+            className={`${!contextValues?.darkMode ? "hover:!text-black" : ""}`}
+            key="1"
+            icon={<HomeOutlined />}
+          >
             <Link to="/">Home</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<SearchOutlined />}>
+          <Menu.Item
+            className={`${!contextValues?.darkMode ? "hover:!text-black" : ""}`}
+            key="2"
+            icon={<SearchOutlined />}
+          >
             <Link to="/search">Search</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<HeartOutlined />}>
+          <Menu.Item
+            className={`${!contextValues?.darkMode ? "hover:!text-black" : ""}`}
+            key="3"
+            icon={<HeartOutlined />}
+          >
             <Link to="/liked">Liked</Link>
           </Menu.Item>
         </Menu>
 
-        <button
-          className={`flex h-12 w-full cursor-pointer items-center ${
-            !contextValues?.collapsed
-              ? "ml-[25px] justify-start"
-              : "justify-center"
-          }`}
-          onClick={() => contextValues?.setCollapsed(!contextValues.collapsed)}
-        >
-          <IoLibraryOutline />
-          {!contextValues?.collapsed && <span className="ml-3">Library</span>}
-        </button>
         <div className="px-1">
           {/* ASIDE DATA TYPE BUTTONS */}
           {!contextValues?.collapsed && (
@@ -134,8 +139,8 @@ const Aside = () => {
       <div
         className={`Library custom-scrollbar relative overflow-scroll overflow-x-hidden ${
           contextValues?.collapsed
-            ? "hide-scrollbar h-[calc(100%-200px)] px-[4px]"
-            : "h-[calc(100%-300px)] px-[2px]"
+            ? "hide-scrollbar h-[calc(100%-160px)] px-[4px]"
+            : "h-[calc(100%-260px)] px-[2px]"
         }`}
       >
         {/* MAPPED DATA */}

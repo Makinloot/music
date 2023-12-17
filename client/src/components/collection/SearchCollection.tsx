@@ -7,6 +7,7 @@ import TrackRowHeading from "../trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
+import { SpotifyContext } from "../../context/SpotifyContext";
 
 export default function SearchCollection({ value }: { value: string }) {
   const { searchData } = useSearch(value, 50);
@@ -31,7 +32,7 @@ export default function SearchCollection({ value }: { value: string }) {
 
   return (
     <>
-      <div className="collection-types flex flex-wrap justify-center gap-2 sm:justify-start">
+      <div className="collection-types flex flex-wrap justify-start gap-2">
         <Button
           danger={searchType === "tracks" && true}
           onClick={() => {
@@ -107,6 +108,7 @@ export function SearchAlbums({
   albums: SpotifyApi.AlbumObjectSimplified[] | undefined;
   loading?: boolean;
 }) {
+  const contextValues = SpotifyContext();
   const fakeArray = Array.from({ length: 20 }, () => ({}));
 
   if (loading)
@@ -123,15 +125,19 @@ export function SearchAlbums({
                 />
                 <Skeleton
                   className="absolute inset-0"
-                  baseColor="#202020"
-                  highlightColor="#444"
+                  baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+                  highlightColor={`${
+                    contextValues?.darkMode ? "#444" : "#ffffff"
+                  }`}
                 />
               </div>
               <div className="mt-2 w-full">
                 <Skeleton
                   className="h-4 w-60 max-w-full"
-                  baseColor="#202020"
-                  highlightColor="#444"
+                  baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+                  highlightColor={`${
+                    contextValues?.darkMode ? "#444" : "#ffffff"
+                  }`}
                   count={2}
                 />
               </div>
@@ -177,7 +183,7 @@ export function SearchArtists({
   return (
     <div className="albums-container my-8">
       <span className="text-xl">Artists</span>
-      <div className="flex flex-wrap justify-between gap-3">
+      <div className="flex flex-wrap justify-around gap-3 md:justify-between">
         {artists?.map((artist) => (
           <Link
             to={`/artist/${artist.id}`}

@@ -70,6 +70,7 @@ const CategoryCard: React.FC<{
 };
 
 const CategoryCardSkeleton = () => {
+  const contextValues = SpotifyContext();
   // fake array for loading items
   const fakeArray = Array.from({ length: 20 }, () => ({}));
   return fakeArray.map(() => (
@@ -77,8 +78,8 @@ const CategoryCardSkeleton = () => {
       <img src={noImg} className="opacity-0" />
       <Skeleton
         className="absolute inset-0"
-        baseColor="#202020"
-        highlightColor="#444"
+        baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
+        highlightColor={`${contextValues?.darkMode ? "#444" : "#ffffff"}`}
       />
     </div>
   ));

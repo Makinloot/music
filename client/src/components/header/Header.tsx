@@ -36,6 +36,9 @@ const Header = () => {
         <button
           onClick={() => {
             contextValues?.setDarkMode(!contextValues.darkMode);
+            if (contextValues?.darkMode === true)
+              localStorage.setItem("theme", "light");
+            else localStorage.setItem("theme", "dark");
           }}
         >
           Theme {contextValues?.darkMode ? <BulbFilled /> : <BulbOutlined />}
