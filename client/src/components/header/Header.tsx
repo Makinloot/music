@@ -9,12 +9,14 @@ import {
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { Link } from "react-router-dom";
 import defaultUser from "/user.png";
+import useScreenWidth from "../../hooks/useScreenWidth";
 
 const Header = () => {
   const contextValues = SpotifyContext();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const smallScreen = useScreenWidth();
   // dropdown menu items
   const items: MenuProps["items"] = [
     {
@@ -79,10 +81,14 @@ const Header = () => {
           fontSize: "16px",
           width: 64,
           height: 64,
+          marginLeft: smallScreen && !contextValues?.collapsed ? "200px" : 10,
+          zIndex: 100,
         }}
       />
       <Dropdown
-        className={`flex cursor-pointer select-none items-center rounded-full`}
+        className={`flex ${
+          smallScreen && !contextValues?.collapsed && "hidden"
+        } cursor-pointer select-none items-center rounded-full`}
         menu={{ items }}
         trigger={["click"]}
       >

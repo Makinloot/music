@@ -88,7 +88,7 @@ const Playlist = () => {
           />
           <div className="ml-2 flex flex-col">
             <h2 className="text-5xl">{playlist?.name}</h2>
-            <div className="ml-[3px] mt-2 flex items-center justify-start gap-1">
+            <div className="ml-[3px] mt-2 flex flex-wrap items-center justify-start gap-1">
               {owner?.images && (
                 <img
                   className="h-12 w-12 rounded-full"

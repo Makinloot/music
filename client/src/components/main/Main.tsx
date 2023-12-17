@@ -13,15 +13,16 @@ import Album from "../../pages/Album";
 import Artist from "../../pages/Artist";
 import Playlist from "../../pages/Playlist";
 import Discography from "../../pages/Discography";
+import useScreenWidth from "../../hooks/useScreenWidth";
 
 const Main: React.FC = () => {
   const contextValues = SpotifyContext();
-
   const location = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { Content } = Layout;
+  const smallScreen = useScreenWidth();
 
   useEffect(() => {
     // save the selected key based on the current location
@@ -31,6 +32,14 @@ const Main: React.FC = () => {
     else if (path === "/liked") localStorage.setItem("selectedKey", "3");
   }, [location]);
 
+  const initialMargin = {
+    marginLeft: contextValues?.collapsed ? 100 : 200,
+  };
+
+  const initialMarginSmall = {
+    marginLeft: 0,
+  };
+
   return (
     <Layout
       className={`container min-h-[100vh] ${
@@ -38,14 +47,14 @@ const Main: React.FC = () => {
       }`}
     >
       <Aside />
-      <Layout>
+      <Layout
+        className={`${
+          smallScreen && !contextValues?.collapsed && "h-screen overflow-hidden"
+        }`}
+      >
         <motion.div
-          initial={{
-            marginLeft: contextValues?.collapsed ? 100 : 200,
-          }}
-          animate={{
-            marginLeft: contextValues?.collapsed ? 100 : 200,
-          }}
+          initial={smallScreen ? initialMarginSmall : initialMargin}
+          animate={smallScreen ? initialMarginSmall : initialMargin}
           // className={contextValues?.collapsed ? "ml-[100px]" : "ml-[200px]"}
         >
           {/* ----------- HEADER ----------- */}
@@ -58,8 +67,11 @@ const Main: React.FC = () => {
               minHeight: 280,
               background: colorBgContainer,
             }}
-            className="relative"
+            className={`relative`}
           >
+            {smallScreen && !contextValues?.collapsed && (
+              <div className="fixed inset-0 bg-[#000000a1]" />
+            )}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />

@@ -14,6 +14,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import "./Aside.css";
+import useScreenWidth from "../../hooks/useScreenWidth";
 
 const Aside = () => {
   const contextValues = SpotifyContext();
@@ -21,6 +22,7 @@ const Aside = () => {
   const [asideType, setAsideType] = useState("playlist");
   const [searchValue, setSearchValue] = useState("");
   const { Sider } = Layout;
+  const smallScreen = useScreenWidth();
 
   // set search value to empty string if menu is collapsed/opened
   useEffect(() => {
@@ -32,7 +34,7 @@ const Aside = () => {
       trigger={null}
       collapsible
       collapsed={contextValues?.collapsed}
-      collapsedWidth={100}
+      collapsedWidth={smallScreen ? 0 : 100}
       className="!fixed z-[1000] h-screen"
     >
       <div
