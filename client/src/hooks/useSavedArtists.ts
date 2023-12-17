@@ -5,21 +5,15 @@ const spotify = new SpotifyWebApi();
 export default function useSavedArtists(token: string) {
   const [savedArtists, setSavedArtists] =
     useState<SpotifyApi.ArtistObjectFull[]>();
+  const [savedArtistsLoading, setSavedArtistsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchSavedAlbums() {
+      setSavedArtistsLoading(true);
       try {
-        let allData: SpotifyApi.ArtistObjectFull[] = [];
-
         const fetchedData = await spotify.getFollowedArtists();
-        if (
-          fetchedData?.artists.items &&
-          fetchedData.artists.items.length > 0
-        ) {
-          allData = [...allData, ...fetchedData.artists.items];
-
-          setSavedArtists(allData);
-        }
+        setSavedArtists(fetchedData.artists.items);
+        setSavedArtistsLoading(false);
       } catch (error) {
         console.log("Error fetching saved artists:", error);
       }
@@ -28,5 +22,5 @@ export default function useSavedArtists(token: string) {
     fetchSavedAlbums();
   }, [token]);
 
-  return { savedArtists };
+  return { savedArtists, savedArtistsLoading };
 }

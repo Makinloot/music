@@ -5,6 +5,7 @@ import { IoPauseCircle, IoPlayCircle } from "react-icons/io5";
 import TrackRow from "../trackRow/TrackRow";
 import TrackRowHeading from "../trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
+import TrackRowSkeleton from "../trackRow/TrackRowSkeleton";
 
 export default function LikedCollection() {
   const contextValues = SpotifyContext();
@@ -82,11 +83,37 @@ export default function LikedCollection() {
         />
       </div>
       <TrackRowHeading added_at />
-      <div id="scrollableDiv" className="collection absolutew-full">
-        <div className="collection-body">
-          {searchedData !== undefined ? (
-            searchedData.length > 0 ? (
-              searchedData.map((item, index) => {
+      {contextValues?.likedLoading ? (
+        <TrackRowSkeleton />
+      ) : (
+        <div id="scrollableDiv" className="collection absolutew-full">
+          <div className="collection-body">
+            {searchedData !== undefined ? (
+              searchedData.length > 0 ? (
+                searchedData.map((item, index) => {
+                  const { album, name, artists, duration_ms } = item.track;
+                  return (
+                    <TrackRow
+                      key={uuidv4()}
+                      index={index}
+                      added_at={item.added_at}
+                      albumName={album.name}
+                      artistName={artists[0].name}
+                      duration={duration_ms}
+                      image={album.images[0].url}
+                      name={name}
+                    />
+                  );
+                })
+              ) : (
+                <div className="m-4 flex">
+                  <p className="text-xl">
+                    No results were found for your search.
+                  </p>
+                </div>
+              )
+            ) : contextValues?.likedTracks ? (
+              contextValues.likedTracks.map((item, index) => {
                 const { album, name, artists, duration_ms } = item.track;
                 return (
                   <TrackRow
@@ -101,32 +128,10 @@ export default function LikedCollection() {
                   />
                 );
               })
-            ) : (
-              <div className="m-4 flex">
-                <p className="text-xl">
-                  No results were found for your search.
-                </p>
-              </div>
-            )
-          ) : contextValues?.likedTracks ? (
-            contextValues.likedTracks.map((item, index) => {
-              const { album, name, artists, duration_ms } = item.track;
-              return (
-                <TrackRow
-                  key={uuidv4()}
-                  index={index}
-                  added_at={item.added_at}
-                  albumName={album.name}
-                  artistName={artists[0].name}
-                  duration={duration_ms}
-                  image={album.images[0].url}
-                  name={name}
-                />
-              );
-            })
-          ) : null}
+            ) : null}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

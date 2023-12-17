@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { v4 as uuidv4 } from "uuid";
-import AsideList from "./AsideList";
+import AsideList, { AsideListSkeleton } from "./AsideList";
 
 const AsideAlbums: React.FC<{ searchValue: string }> = ({ searchValue }) => {
   const contextValues = SpotifyContext();
@@ -25,7 +25,9 @@ const AsideAlbums: React.FC<{ searchValue: string }> = ({ searchValue }) => {
 
   return (
     <div className="py-2">
-      {searchedData !== undefined ? (
+      {contextValues?.savedAlbumsLoading ? (
+        <AsideListSkeleton />
+      ) : searchedData !== undefined ? (
         searchedData.length > 0 ? (
           searchedData.map((item) => (
             <AsideList

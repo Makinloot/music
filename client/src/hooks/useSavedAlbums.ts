@@ -7,10 +7,12 @@ export default function useSavedAlbums(token: string) {
     SpotifyApi.SavedAlbumObject[] | undefined
   >();
   const [totalAlbums, setTotalAlbums] = useState(0);
+  const [savedAlbumsLoading, setSaveAlbumsLoading] = useState(false);
 
   // fetch liked tracks
   useEffect(() => {
     async function fetchSavedAlbums() {
+      setSaveAlbumsLoading(true);
       try {
         let allData: SpotifyApi.SavedAlbumObject[] = [];
         let hasMoreItems = true;
@@ -25,9 +27,9 @@ export default function useSavedAlbums(token: string) {
           if (fetchedData?.items && fetchedData.items.length > 0) {
             allData = [...allData, ...fetchedData.items];
             offset += 50;
-
-            setSavedAlbums(allData);
           } else {
+            setSavedAlbums(allData);
+            setSaveAlbumsLoading(false);
             hasMoreItems = false;
           }
         }
@@ -39,5 +41,5 @@ export default function useSavedAlbums(token: string) {
     fetchSavedAlbums();
   }, [token]);
 
-  return { savedAlbums, totalAlbums };
+  return { savedAlbums, totalAlbums, savedAlbumsLoading };
 }

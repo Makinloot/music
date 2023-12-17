@@ -1,6 +1,8 @@
 import React from "react";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import { v4 as uuidv4 } from "uuid";
 
 const AsideList: React.FC<{
   image: string;
@@ -38,5 +40,17 @@ const AsideList: React.FC<{
     </Link>
   );
 };
+
+export function AsideListSkeleton() {
+  const fakeArray = Array.from({ length: 12 }, () => ({}));
+  return fakeArray.map(() => (
+    <Skeleton
+      key={uuidv4()}
+      className="my-2 h-[44px] w-full"
+      baseColor="#202020"
+      highlightColor="#444"
+    />
+  ));
+}
 
 export default AsideList;

@@ -12,15 +12,19 @@ type Values = {
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   likedTracks: SpotifyApi.SavedTrackObject[] | undefined;
+  likedLoading: boolean;
   totalTracks: number;
   selectedPage: string;
   setSelectedPage: React.Dispatch<React.SetStateAction<string>>;
   savedAlbums: SpotifyApi.SavedAlbumObject[] | undefined;
   totalAlbums: number;
+  savedAlbumsLoading: boolean;
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   savedPlaylists: SpotifyApi.PlaylistObjectSimplified[] | undefined;
+  savedPlaylistsLoading: boolean;
   savedArtists: SpotifyApi.ArtistObjectFull[] | undefined;
+  savedArtistsLoading: boolean;
   trackUris: string[];
   setTrackUris: React.Dispatch<React.SetStateAction<string[]>>;
   play: boolean;
@@ -50,13 +54,14 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const [play, setPlay] = useState(false);
 
   // liked tracks & total liked tracks
-  const { likedTracks, totalTracks } = useLikedTracks(token);
+  const { likedTracks, totalTracks, likedLoading } = useLikedTracks(token);
   // saved albums & total saved albums
-  const { savedAlbums, totalAlbums } = useSavedAlbums(token);
+  const { savedAlbums, totalAlbums, savedAlbumsLoading } =
+    useSavedAlbums(token);
   // saved playlists
-  const { savedPlaylists } = useSavedPlaylists(token);
+  const { savedPlaylists, savedPlaylistsLoading } = useSavedPlaylists(token);
   // saved artists
-  const { savedArtists } = useSavedArtists(token);
+  const { savedArtists, savedArtistsLoading } = useSavedArtists(token);
 
   // handle current user
   const handleCurrentUser = async () => {
@@ -122,15 +127,19 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     darkMode,
     setDarkMode,
     likedTracks,
+    likedLoading,
     totalTracks,
     selectedPage,
     setSelectedPage,
     savedAlbums,
     totalAlbums,
+    savedAlbumsLoading,
     collapsed,
     setCollapsed,
     savedPlaylists,
+    savedPlaylistsLoading,
     savedArtists,
+    savedArtistsLoading,
     trackUris,
     setTrackUris,
     play,

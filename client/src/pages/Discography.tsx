@@ -9,10 +9,12 @@ const Discography = () => {
   const [discography, setDiscography] = useState<
     SpotifyApi.AlbumObjectSimplified[] | undefined
   >();
+  const [loading, setLoading] = useState(false);
 
   // TODO: fetch whole discography
   useEffect(() => {
     async function getDiscography(id: string) {
+      setLoading(true);
       try {
         const fetchedDiscography = await contextValues?.spotify.getArtistAlbums(
           id,
@@ -21,6 +23,7 @@ const Discography = () => {
           },
         );
         setDiscography(fetchedDiscography?.items);
+        setLoading(false);
       } catch (error) {
         console.log("error fetching discography: ", error);
       }
@@ -31,7 +34,7 @@ const Discography = () => {
 
   return (
     <div className="Discography">
-      <SearchAlbums albums={discography} />
+      <SearchAlbums albums={discography} loading={loading} />
     </div>
   );
 };

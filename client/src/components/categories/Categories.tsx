@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SpotifyContext } from "../../context/SpotifyContext";
+import { v4 as uuidv4 } from "uuid";
+import noImg from "/no-img.png";
+import Skeleton from "react-loading-skeleton";
 import "./Categories.css";
 
 const Categories = () => {
@@ -8,9 +11,11 @@ const Categories = () => {
   const [categories, setCategories] = useState<
     SpotifyApi.CategoryObject[] | undefined
   >();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getCategories() {
+      setLoading(true);
       try {
         const fetchedCategories = await contextValues?.spotify.getCategories({
           limit: 50,
@@ -19,6 +24,7 @@ const Categories = () => {
           (category) => category.name !== "Party" && category,
         );
         setCategories(filterCategories);
+        setLoading(false);
       } catch (error) {
         console.log("error fetching categories: ", error);
       }
@@ -32,10 +38,14 @@ const Categories = () => {
       <h3 className="mb-4 text-2xl">Browse by categories</h3>
       <div className="Search-categories">
         <div className="categories-container">
-          {categories &&
+          {loading ? (
+            <CategoryCardSkeleton />
+          ) : (
+            categories &&
             categories.map((category) => (
               <CategoryCard key={category.id} {...category} />
-            ))}
+            ))
+          )}
         </div>
       </div>
     </>
@@ -57,6 +67,21 @@ const CategoryCard: React.FC<{
       </div>
     </Link>
   );
+};
+
+const CategoryCardSkeleton = () => {
+  // fake array for loading items
+  const fakeArray = Array.from({ length: 20 }, () => ({}));
+  return fakeArray.map(() => (
+    <div key={uuidv4()} className="relative">
+      <img src={noImg} className="opacity-0" />
+      <Skeleton
+        className="absolute inset-0"
+        baseColor="#202020"
+        highlightColor="#444"
+      />
+    </div>
+  ));
 };
 
 export default Categories;

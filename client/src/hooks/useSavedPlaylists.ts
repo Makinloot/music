@@ -5,9 +5,11 @@ const spotify = new SpotifyWebApi();
 export default function useSavedPlaylists(token: string) {
   const [savedPlaylists, setSavedPlaylists] =
     useState<SpotifyApi.PlaylistObjectSimplified[]>();
+  const [savedPlaylistsLoading, setSavedPlaylistsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchSavedAlbums() {
+      setSavedPlaylistsLoading(true);
       try {
         let allData: SpotifyApi.PlaylistObjectSimplified[] = [];
 
@@ -16,6 +18,7 @@ export default function useSavedPlaylists(token: string) {
           allData = [...allData, ...fetchedData.items];
 
           setSavedPlaylists(allData);
+          setSavedPlaylistsLoading(false);
         }
       } catch (error) {
         console.log(`Error fetching liked tracks: ${error}`);
@@ -25,5 +28,5 @@ export default function useSavedPlaylists(token: string) {
     fetchSavedAlbums();
   }, [token]);
 
-  return { savedPlaylists };
+  return { savedPlaylists, savedPlaylistsLoading };
 }

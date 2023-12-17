@@ -7,6 +7,7 @@ export default function useLikedTracks(token: string) {
     SpotifyApi.SavedTrackObject[] | undefined
   >();
   const [totalTracks, setTotalTracks] = useState(0);
+  const [likedLoading, setLikedLoading] = useState(false);
 
   // fetch liked tracks
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function useLikedTracks(token: string) {
         let allData: SpotifyApi.SavedTrackObject[] = [];
         let hasMoreItems = true;
         let offset = 0;
-
+        setLikedLoading(true);
         while (hasMoreItems) {
           const fetchedData = await spotify.getMySavedTracks({
             limit: 50,
@@ -25,9 +26,9 @@ export default function useLikedTracks(token: string) {
           if (fetchedData?.items && fetchedData.items.length > 0) {
             allData = [...allData, ...fetchedData.items];
             offset += 50;
-
-            setLikedTracks(allData);
           } else {
+            setLikedTracks(allData);
+            setLikedLoading(false);
             hasMoreItems = false;
           }
         }
@@ -39,5 +40,5 @@ export default function useLikedTracks(token: string) {
     fetchLikedTracks();
   }, [token]);
 
-  return { likedTracks, totalTracks };
+  return { likedTracks, totalTracks, likedLoading };
 }

@@ -6,8 +6,9 @@ import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import TrackRow from "../components/trackRow/TrackRow";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "antd";
-import { SearchArtists } from "../components/collection/SearchCollection";
 import RowSlider from "../components/rowSlider/RowSlider";
+import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
+import Skeleton from "react-loading-skeleton";
 
 interface ArtistDataTypes {
   artist: SpotifyApi.SingleArtistResponse | undefined;
@@ -20,10 +21,20 @@ const Artist = () => {
   const contextValues = SpotifyContext();
   const { id } = useParams();
   const [artistData, setArtistData] = useState<ArtistDataTypes | undefined>();
+  const [artistDataLoading, setArtistDataLoading] = useState({
+    artist: false,
+    topTracks: false,
+    albums: false,
+  });
   const [moreTracks, setMoreTracks] = useState(false);
 
   useEffect(() => {
     async function getArtistData(id: string) {
+      setArtistDataLoading({
+        artist: true,
+        albums: true,
+        topTracks: true,
+      });
       try {
         const fetchedArtist = await contextValues?.spotify.getArtist(id);
         const fetchedArtistTopTracks =
@@ -40,7 +51,11 @@ const Artist = () => {
           albums: fetchedArtistAlbums,
           relatedArtists: fetchedRelatedArtists,
         });
-        console.log(fetchedArtist);
+        setArtistDataLoading({
+          artist: false,
+          albums: false,
+          topTracks: false,
+        });
       } catch (error) {
         console.log("error fetching artist data: ", error);
       }
@@ -52,55 +67,75 @@ const Artist = () => {
 
   return (
     <div className="Artist">
-      <div className="Artist-header flex flex-row items-end justify-start">
-        <img
-          className="h-[300px] w-[300px] object-cover"
-          src={artistData?.artist?.images[0].url || noImg}
-          alt={artistData?.artist?.name}
-        />
-        <div className="ml-2 flex flex-col">
-          <h2 className="text-5xl">{artistData?.artist?.name}</h2>
-          <span className="mt-2">
-            {artistData?.artist?.followers.total.toLocaleString()} Followers
-          </span>
+      {artistDataLoading.artist ? (
+        <ArtistHeaderSkeleton />
+      ) : (
+        <div className="Artist-header flex flex-row items-end justify-start">
+          <img
+            className="h-[300px] w-[300px] object-cover"
+            src={artistData?.artist?.images[0].url || noImg}
+            alt={artistData?.artist?.name}
+          />
+          <div className="ml-2 flex flex-col">
+            <h2 className="text-5xl">{artistData?.artist?.name}</h2>
+            <span className="mt-2">
+              {artistData?.artist?.followers.total.toLocaleString()} Followers
+            </span>
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="Artist-top-tracks my-8">
         <h3 className="my-2 text-xl capitalize">Popular tracks</h3>
         <TrackRowHeading />
-        {artistData?.topTracks?.tracks
-          .map((item, index) => (
-            <TrackRow
-              key={uuidv4()}
-              index={index}
-              albumName={item.album.name}
-              artistName={item.artists[0].name}
-              name={item.name}
-              duration={item.duration_ms}
-              image={item.album.images[0].url}
-            />
-          ))
-          .slice(0, moreTracks ? 10 : 5)}
+        {artistDataLoading.topTracks ? (
+          <TrackRowSkeleton count={5} />
+        ) : (
+          artistData?.topTracks?.tracks
+            .map((item, index) => (
+              <TrackRow
+                key={uuidv4()}
+                index={index}
+                albumName={item.album.name}
+                artistName={item.artists[0].name}
+                name={item.name}
+                duration={item.duration_ms}
+                image={item.album.images[0].url}
+              />
+            ))
+            .slice(0, moreTracks ? 10 : 5)
+        )}
         <Button className="my-2" onClick={() => setMoreTracks(!moreTracks)}>
           {moreTracks ? "Show less" : "Show more"}
         </Button>
       </div>
 
-      {artistData?.albums && (
-        <RowSlider
-          title="albums"
-          url={`/discography/${artistData?.artist?.id}`}
-          artistAlbumResponse={artistData?.albums}
-        />
-      )}
-
-      <div className="Artist-related-artists">
-        <SearchArtists
-          artists={artistData?.relatedArtists?.artists.slice(0, 8)}
-        />
-      </div>
+      <RowSlider
+        title="albums"
+        url={`/discography/${artistData?.artist?.id}`}
+        artistAlbumResponse={artistData?.albums}
+        loading={artistDataLoading.albums}
+      />
     </div>
   );
 };
+
+function ArtistHeaderSkeleton() {
+  return (
+    <div className="Artist-header flex flex-row items-end justify-start">
+      <Skeleton
+        className="h-[300px] w-[300px] object-cover"
+        baseColor="#202020"
+        highlightColor="#444"
+      />
+      <Skeleton
+        className="ml-2 h-10 w-60 max-w-full"
+        baseColor="#202020"
+        highlightColor="#444"
+        count={2}
+      />
+    </div>
+  );
+}
 
 export default Artist;

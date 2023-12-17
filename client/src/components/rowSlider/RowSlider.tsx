@@ -4,7 +4,7 @@ import { FreeMode } from "swiper/modules";
 import { Link } from "react-router-dom";
 import Card from "../card/Card";
 import { v4 as uuidv4 } from "uuid";
-// Import Swiper styles
+import RowSliderSkeleton from "./RowSliderSkeleton";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
@@ -16,6 +16,7 @@ interface RowSliderTypes {
   recommendationsFromSeeds?: SpotifyApi.RecommendationsFromSeedsResponse;
   albumsObjectSimplified?: SpotifyApi.AlbumObjectSimplified[];
   artistAlbumResponse?: SpotifyApi.ArtistsAlbumsResponse;
+  loading: boolean;
 }
 const RowSlider: React.FC<RowSliderTypes> = ({
   title,
@@ -24,6 +25,7 @@ const RowSlider: React.FC<RowSliderTypes> = ({
   recommendationsFromSeeds,
   albumsObjectSimplified,
   artistAlbumResponse,
+  loading,
 }) => {
   const [slidesPerView, setSlidesPerView] = useState<number>(7.6);
 
@@ -64,7 +66,9 @@ const RowSlider: React.FC<RowSliderTypes> = ({
     !artistAlbumResponse
   )
     return null;
-  return (
+  return loading ? (
+    <RowSliderSkeleton slidesPerView={slidesPerView} />
+  ) : (
     <div>
       <div className="flex items-center justify-between">
         <h3 className="my-2 text-xl capitalize">{title}</h3>

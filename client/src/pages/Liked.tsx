@@ -13,7 +13,7 @@ const Liked: React.FC = () => {
       <div className="mb-2 flex">
         <div className="flex flex-1 flex-col justify-between">
           <h3 className="text-2xl">Liked Songs</h3>
-          <strong>
+          <strong className="h-[21px]">
             {contextValues?.totalTracks !== 0 &&
               `${contextValues?.totalTracks} songs`}
           </strong>

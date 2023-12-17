@@ -6,6 +6,7 @@ import TrackRow from "../trackRow/TrackRow";
 import TrackRowHeading from "../trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 
 export default function SearchCollection({ value }: { value: string }) {
   const { searchData } = useSearch(value, 50);
@@ -101,9 +102,44 @@ export function SearchTracks({
 // display albums
 export function SearchAlbums({
   albums,
+  loading,
 }: {
   albums: SpotifyApi.AlbumObjectSimplified[] | undefined;
+  loading?: boolean;
 }) {
+  const fakeArray = Array.from({ length: 20 }, () => ({}));
+
+  if (loading)
+    return (
+      <div className="albums-container my-8">
+        <span className="text-xl">Albums</span>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {fakeArray?.map(() => (
+            <div key={uuidv4()} className="my-4 flex flex-col">
+              <div className="relative">
+                <img
+                  className="w-full rounded-md object-cover opacity-0"
+                  src={noImg}
+                />
+                <Skeleton
+                  className="absolute inset-0"
+                  baseColor="#202020"
+                  highlightColor="#444"
+                />
+              </div>
+              <div className="mt-2 w-full">
+                <Skeleton
+                  className="h-4 w-60 max-w-full"
+                  baseColor="#202020"
+                  highlightColor="#444"
+                  count={2}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   return (
     <div className="albums-container my-8">
       <span className="text-xl">Albums</span>

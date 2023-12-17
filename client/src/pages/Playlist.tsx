@@ -6,6 +6,8 @@ import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import TrackRow from "../components/trackRow/TrackRow";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import Skeleton from "react-loading-skeleton";
+import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
 
 const Playlist = () => {
   const contextValues = SpotifyContext();
@@ -13,23 +15,26 @@ const Playlist = () => {
   const [playlist, setPlaylist] = useState<
     SpotifyApi.SinglePlaylistResponse | undefined
   >();
+  const [playlistLoading, setPlaylistLoading] = useState(false);
   const [playlistTracks, setPlaylistTracks] =
     useState<SpotifyApi.PlaylistTrackObject[]>();
+  const [playlistTracksLoading, setPlaylistTracksLoading] = useState(false);
   const [owner, setOwner] = useState<
     SpotifyApi.UserProfileResponse | undefined
   >();
 
-  console.log(playlist);
-
+  // fetch playlist details and tracks
   useEffect(() => {
     async function getPlaylist(id: string) {
+      setPlaylistLoading(true);
+      setPlaylistTracksLoading(true);
       try {
         let allTracks: SpotifyApi.PlaylistTrackObject[] | undefined = [];
         let hasMoreItems = true;
         let offset = 0;
         const fetchedPlaylist = await contextValues?.spotify.getPlaylist(id);
         setPlaylist(fetchedPlaylist);
-
+        setPlaylistLoading(false);
         // fetch every track from playlist
         while (hasMoreItems) {
           const fetchedPlaylistTracks =
@@ -43,9 +48,9 @@ const Playlist = () => {
           ) {
             allTracks = [...allTracks, ...fetchedPlaylistTracks.items];
             offset += 100;
-
-            setPlaylistTracks(allTracks);
           } else {
+            setPlaylistTracks(allTracks);
+            setPlaylistTracksLoading(false);
             hasMoreItems = false;
           }
         }
@@ -57,6 +62,7 @@ const Playlist = () => {
     window.scrollTo(0, 0);
   }, [contextValues?.spotify, id]);
 
+  // fetch playlist owner
   useEffect(() => {
     async function getPlaylistOwner(id: string) {
       try {
@@ -68,54 +74,62 @@ const Playlist = () => {
     }
     if (playlist?.owner.id) getPlaylistOwner(playlist.owner.id);
   }, [contextValues?.spotify, playlist?.owner?.id]);
+
   return (
     <div className="Playlist">
-      <div className="Playlist-header flex flex-row items-end justify-start">
-        <img
-          className="h-[300px] w-[300px] object-cover"
-          src={playlist?.images[0].url || noImg}
-          alt={playlist?.name}
-        />
-        <div className="ml-2 flex flex-col">
-          <h2 className="text-5xl">{playlist?.name}</h2>
-          <div className="ml-[3px] mt-2 flex items-center justify-start gap-1">
-            {owner?.images && (
-              <img
-                className="h-12 w-12 rounded-full"
-                src={owner?.images[0].url || noImg}
-                alt={playlist?.owner.display_name}
-              />
-            )}
-            <h3>{playlist?.owner?.display_name}</h3>•
-            <span>{playlist?.tracks?.total} songs</span>•
-            {/* display duration of playlist */}
-            <span>
-              {moment
-                .utc(
-                  playlistTracks?.reduce(
-                    (total, track) => total + track.track.duration_ms,
-                    0,
-                  ),
-                )
-                .format(
-                  moment
-                    .duration(
-                      playlistTracks?.reduce(
-                        (total, track) => total + track.track.duration_ms,
-                        0,
-                      ),
-                    )
-                    .hours() >= 1
-                    ? "h [hours], m [minutes], s [seconds]"
-                    : "m [minutes], s [seconds]",
-                )}
-            </span>
+      {playlistLoading ? (
+        <PlaylistHeaderSkeleton />
+      ) : (
+        <div className="Playlist-header flex flex-row items-end justify-start">
+          <img
+            className="h-[300px] w-[300px] object-cover"
+            src={playlist?.images[0].url || noImg}
+            alt={playlist?.name}
+          />
+          <div className="ml-2 flex flex-col">
+            <h2 className="text-5xl">{playlist?.name}</h2>
+            <div className="ml-[3px] mt-2 flex items-center justify-start gap-1">
+              {owner?.images && (
+                <img
+                  className="h-12 w-12 rounded-full"
+                  src={owner?.images[0].url || noImg}
+                  alt={playlist?.owner.display_name}
+                />
+              )}
+              <h3>{playlist?.owner?.display_name}</h3>•
+              <span>{playlist?.tracks?.total} songs</span>•
+              {/* display duration of playlist */}
+              <span>
+                {moment
+                  .utc(
+                    playlistTracks?.reduce(
+                      (total, track) => total + track.track.duration_ms,
+                      0,
+                    ),
+                  )
+                  .format(
+                    moment
+                      .duration(
+                        playlistTracks?.reduce(
+                          (total, track) => total + track.track.duration_ms,
+                          0,
+                        ),
+                      )
+                      .hours() >= 1
+                      ? "h [hours], m [minutes], s [seconds]"
+                      : "m [minutes], s [seconds]",
+                  )}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div>
         <TrackRowHeading added_at />
-        {playlistTracks &&
+        {playlistTracksLoading ? (
+          <TrackRowSkeleton />
+        ) : (
+          playlistTracks &&
           playlistTracks.map((item, index) => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -132,10 +146,29 @@ const Playlist = () => {
                 added_at={item.added_at}
               />
             );
-          })}
+          })
+        )}
       </div>
     </div>
   );
 };
+
+function PlaylistHeaderSkeleton() {
+  return (
+    <div className="Playlist-header flex flex-row items-end justify-start">
+      <Skeleton
+        className="h-[300px] w-[300px]"
+        baseColor="#202020"
+        highlightColor="#444"
+      />
+      <Skeleton
+        className="ml-2 h-10 w-60 max-w-full"
+        baseColor="#202020"
+        highlightColor="#444"
+        count={2}
+      />
+    </div>
+  );
+}
 
 export default Playlist;
