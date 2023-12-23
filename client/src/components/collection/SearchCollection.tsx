@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { SpotifyContext } from "../../context/SpotifyContext";
+import PlayButtons from "../playButtons/PlayButtons";
 
 export default function SearchCollection({ value }: { value: string }) {
   const { searchData } = useSearch(value, 50);
@@ -79,24 +80,31 @@ export function SearchTracks({
 }: {
   tracks: SpotifyApi.TrackObjectFull[] | undefined;
 }) {
+  const tracksUri = tracks?.map((track) => track.uri);
   return (
-    <div className="tracks-container my-8">
-      <TrackRowHeading />
-      {tracks?.map((item, index) => {
-        const { album, name, artists, duration_ms } = item;
-        return (
-          <TrackRow
-            key={uuidv4()}
-            index={index}
-            albumName={album.name}
-            artistName={artists[0].name}
-            duration={duration_ms}
-            image={album?.images[0]?.url}
-            name={name}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className="mt-4">
+        <PlayButtons tracks={tracksUri} noShuffle />
+      </div>
+      <div className="tracks-container my-4">
+        <TrackRowHeading />
+        {tracks?.map((item, index) => {
+          const { album, name, artists, duration_ms, uri } = item;
+          return (
+            <TrackRow
+              key={uuidv4()}
+              index={index}
+              albumName={album.name}
+              artistName={artists[0].name}
+              duration={duration_ms}
+              image={album?.images[0]?.url}
+              name={name}
+              uri={[uri]}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 }
 

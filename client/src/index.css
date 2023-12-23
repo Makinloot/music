@@ -35,3 +35,31 @@ html {
 ::-moz-scrollbar-thumb {
   background-color: gray;
 }
+
+@media (max-width: 768px) {
+  .rswp__active {
+    /* display: none !important; */
+    height: 30px !important;
+    min-height: 0px !important;
+  }
+
+  .rswp__active div:first-child {
+    min-height: 0px !important;
+  }
+
+  .rswp__active a {
+    width: 20px !important;
+    height: 20px !important;
+    min-height: initial !important;
+    min-width: initial !important;
+  }
+
+  .rswp__active img {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .rswp__active p:last-child {
+    display: none;
+  }
+}

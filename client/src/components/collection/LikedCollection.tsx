@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Input } from "antd";
 import { SpotifyContext } from "../../context/SpotifyContext";
-import { IoPauseCircle, IoPlayCircle } from "react-icons/io5";
 import TrackRow from "../trackRow/TrackRow";
 import TrackRowHeading from "../trackRow/TrackRowHeading";
 import { v4 as uuidv4 } from "uuid";
 import TrackRowSkeleton from "../trackRow/TrackRowSkeleton";
+import PlayButtons from "../playButtons/PlayButtons";
 
 export default function LikedCollection() {
   const contextValues = SpotifyContext();
@@ -13,18 +13,11 @@ export default function LikedCollection() {
     SpotifyApi.SavedTrackObject[] | undefined
   >([]);
   const [searchValue, setSearchValue] = useState("");
-  // const [shuffle, setShuffle] = useState(false);
 
+  // get array of uris from liked tracks
   const likedTrackUris = contextValues?.likedTracks?.map(
-    (item) => item.track.name,
+    (item) => item.track.uri,
   );
-
-  // shuffle liked tracks
-  // useEffect(() => {
-  //   const shuffledLikedTrackUris = likedTrackUris
-  //     ? [...likedTrackUris].sort(() => Math.random() - 0.5)
-  //     : [];
-  // }, [shuffle]);
 
   // search liked tracks
   useEffect(() => {
@@ -45,30 +38,9 @@ export default function LikedCollection() {
   return (
     <>
       <div className="flex items-center">
-        <div className="flex cursor-pointer items-center gap-1">
-          {contextValues?.play ? (
-            <button onClick={() => contextValues.setPlay(false)}>
-              <IoPauseCircle size={38} />
-            </button>
-          ) : (
-            <button
-              onClick={() =>
-                likedTrackUris && contextValues?.setTrackUris(likedTrackUris)
-              }
-            >
-              <IoPlayCircle size={38} />
-            </button>
-          )}
-          {/* {shuffle ? (
-            <button onClick={() => setShuffle(false)}>
-              <IoShuffle size={35} color="green" />
-            </button>
-          ) : (
-            <button onClick={() => setShuffle(true)}>
-              <IoShuffle size={35} />
-            </button>
-          )} */}
-        </div>
+        {contextValues?.likedTracks && likedTrackUris && (
+          <PlayButtons tracks={likedTrackUris} />
+        )}
         <Input
           className="ml-2 w-[250px]"
           placeholder="Search in playlist..."
@@ -91,7 +63,7 @@ export default function LikedCollection() {
             {searchedData !== undefined ? (
               searchedData.length > 0 ? (
                 searchedData.map((item, index) => {
-                  const { album, name, artists, duration_ms } = item.track;
+                  const { album, name, artists, duration_ms, uri } = item.track;
                   return (
                     <TrackRow
                       key={uuidv4()}
@@ -102,6 +74,7 @@ export default function LikedCollection() {
                       duration={duration_ms}
                       image={album.images[0].url}
                       name={name}
+                      uri={[uri]}
                     />
                   );
                 })
@@ -114,7 +87,7 @@ export default function LikedCollection() {
               )
             ) : contextValues?.likedTracks ? (
               contextValues.likedTracks.map((item, index) => {
-                const { album, name, artists, duration_ms } = item.track;
+                const { album, name, artists, duration_ms, uri } = item.track;
                 return (
                   <TrackRow
                     key={uuidv4()}
@@ -125,6 +98,7 @@ export default function LikedCollection() {
                     duration={duration_ms}
                     image={album.images[0].url}
                     name={name}
+                    uri={[uri]}
                   />
                 );
               })

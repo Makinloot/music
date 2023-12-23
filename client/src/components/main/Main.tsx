@@ -42,7 +42,7 @@ const Main: React.FC = () => {
 
   return (
     <Layout
-      className={`container min-h-[100vh] ${
+      className={`container h-[calc(100vh-80px)] overflow-scroll overflow-x-hidden ${
         contextValues?.darkMode ? "text-white" : "text-black"
       }`}
     >
@@ -70,7 +70,7 @@ const Main: React.FC = () => {
             className={`relative`}
           >
             {smallScreen && !contextValues?.collapsed && (
-              <div className="fixed inset-0 bg-[#000000a1]" />
+              <div className="fixed inset-0 z-[2000] bg-[#000000a1]" />
             )}
             <Routes>
               <Route path="/" element={<Home />} />

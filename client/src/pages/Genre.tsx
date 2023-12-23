@@ -18,6 +18,7 @@ const Genre = () => {
   const [data, setData] = useState<SpotifyApi.SearchResponse | undefined>();
   const [searchType, setSearchType] = useState("tracks");
 
+  // get genre by ID
   useEffect(() => {
     async function getGenre(id: string) {
       try {
@@ -31,6 +32,7 @@ const Genre = () => {
     if (id) getGenre(id);
   }, [contextValues?.spotify, id]);
 
+  // get genre artists, albums, tracks
   useEffect(() => {
     async function getItemsByGenre() {
       try {
@@ -42,7 +44,6 @@ const Genre = () => {
           },
         );
         setData(fetchedItems);
-        console.log("fetched items", fetchedItems);
       } catch (error) {
         console.log("error fetching items by genre: ", error);
       }
@@ -50,7 +51,6 @@ const Genre = () => {
 
     if (genre) getItemsByGenre();
   }, [contextValues?.spotify, genre]);
-
   return (
     <div className="Genre">
       <CollectionHeader img={genre?.icons[0].url} title={genre?.name} />

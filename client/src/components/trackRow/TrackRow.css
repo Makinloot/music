@@ -52,6 +52,17 @@
   gap: 1rem;
 }
 
+/* track-row hovers */
+.play {
+  display: none;
+}
+.track-row:hover .track-row-index .index {
+  display: none;
+}
+.track-row:hover .track-row-index .play {
+  display: initial;
+}
+
 @media (min-width: 600px) {
   .grid-cols {
     grid-template-columns: 10% 75% 15%;

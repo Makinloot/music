@@ -14,6 +14,7 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import "./Aside.css";
 import useScreenWidth from "../../hooks/useScreenWidth";
+import { IoLibraryOutline } from "react-icons/io5";
 
 const Aside = () => {
   const contextValues = SpotifyContext();
@@ -22,6 +23,9 @@ const Aside = () => {
   const [searchValue, setSearchValue] = useState("");
   const { Sider } = Layout;
   const smallScreen = useScreenWidth();
+
+  // close aside menu if window width is lower or equal to 768px
+  const closeAside = () => smallScreen && contextValues?.setCollapsed(true);
 
   // set search value to empty string if menu is collapsed/opened
   useEffect(() => {
@@ -34,11 +38,11 @@ const Aside = () => {
       collapsible
       collapsed={contextValues?.collapsed}
       collapsedWidth={smallScreen ? 0 : 100}
-      className="!fixed z-[1000] h-screen"
+      className="!fixed z-[30000] h-[calc(100vh-80px)]"
       style={{ backgroundColor: !contextValues?.darkMode ? "white" : "" }}
     >
       <div
-        className={`${contextValues?.collapsed ? "h-[160px]" : "h-[260px]"}`}
+        className={`${contextValues?.collapsed ? "h-[200px]" : "h-[300px]"}`}
       >
         {/* ASIDE MENU */}
         <Menu
@@ -56,23 +60,42 @@ const Aside = () => {
             key="1"
             icon={<HomeOutlined />}
           >
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={closeAside}>
+              Home
+            </Link>
           </Menu.Item>
           <Menu.Item
             className={`${!contextValues?.darkMode ? "hover:!text-black" : ""}`}
             key="2"
             icon={<SearchOutlined />}
           >
-            <Link to="/search">Search</Link>
+            <Link to="/search" onClick={closeAside}>
+              Search
+            </Link>
           </Menu.Item>
           <Menu.Item
             className={`${!contextValues?.darkMode ? "hover:!text-black" : ""}`}
             key="3"
             icon={<HeartOutlined />}
           >
-            <Link to="/liked">Liked</Link>
+            <Link to="/liked" onClick={closeAside}>
+              Liked
+            </Link>
           </Menu.Item>
         </Menu>
+
+        {/* open-close menu button */}
+        <button
+          className={`flex h-12 w-full cursor-pointer items-center ${
+            !contextValues?.collapsed
+              ? "ml-[25px] justify-start"
+              : "justify-center"
+          }`}
+          onClick={() => contextValues?.setCollapsed(!contextValues.collapsed)}
+        >
+          <IoLibraryOutline />
+          {!contextValues?.collapsed && <span className="ml-3">Library</span>}
+        </button>
 
         <div className="px-1">
           {/* ASIDE DATA TYPE BUTTONS */}
@@ -139,8 +162,8 @@ const Aside = () => {
       <div
         className={`Library custom-scrollbar relative overflow-scroll overflow-x-hidden ${
           contextValues?.collapsed
-            ? "hide-scrollbar h-[calc(100%-160px)] px-[4px]"
-            : "h-[calc(100%-260px)] px-[2px]"
+            ? "hide-scrollbar h-[calc(100%-200px)] px-[4px]"
+            : "h-[calc(100%-300px)] px-[2px]"
         }`}
       >
         {/* MAPPED DATA */}

@@ -67,18 +67,13 @@ const Header = () => {
 
   return (
     <Layout.Header
-      className="flex items-center justify-between p-0 pr-5"
+      className="relative z-[20000] flex items-center justify-between p-0 pr-5"
       style={{ background: colorBgContainer }}
     >
+      {/* close-open menu button */}
       <Button
         type="text"
-        icon={
-          contextValues?.collapsed ? (
-            <MenuUnfoldOutlined />
-          ) : (
-            <MenuFoldOutlined />
-          )
-        }
+        id="close-menu-btn"
         onClick={() => contextValues?.setCollapsed(!contextValues?.collapsed)}
         style={{
           fontSize: "16px",
@@ -86,8 +81,18 @@ const Header = () => {
           height: 64,
           marginLeft: smallScreen && !contextValues?.collapsed ? "200px" : 10,
           zIndex: 100,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        {contextValues?.collapsed ? (
+          <MenuUnfoldOutlined className="pointer-events-none select-none" />
+        ) : (
+          <MenuFoldOutlined className="pointer-events-none select-none" />
+        )}
+      </Button>
+
       <Dropdown
         className={`flex ${
           smallScreen && !contextValues?.collapsed && "hidden"

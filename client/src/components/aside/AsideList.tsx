@@ -3,6 +3,7 @@ import { SpotifyContext } from "../../context/SpotifyContext";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { v4 as uuidv4 } from "uuid";
+import useScreenWidth from "../../hooks/useScreenWidth";
 
 const AsideList: React.FC<{
   image: string;
@@ -12,12 +13,16 @@ const AsideList: React.FC<{
   url: string;
 }> = ({ image, name, description, artist, url }) => {
   const contextValues = SpotifyContext();
+  const smallScreen = useScreenWidth();
+  // close aside menu if window width is lower or equal to 768px
+  const closeAside = () => smallScreen && contextValues?.setCollapsed(true);
   return (
     <Link
       to={url}
       className={`flex items-center ${
         contextValues?.collapsed && "justify-center"
       } my-4 px-[2px]`}
+      onClick={closeAside}
     >
       <div
         className={`max-w-[44px] ${

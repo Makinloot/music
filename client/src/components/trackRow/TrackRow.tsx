@@ -1,7 +1,9 @@
 import React from "react";
 import moment from "moment";
 import noImg from "/no-img.png";
+import { IoPlay } from "react-icons/io5";
 import "./TrackRow.css";
+import { SpotifyContext } from "../../context/SpotifyContext";
 
 interface TrackRowTypes {
   index: number;
@@ -11,6 +13,7 @@ interface TrackRowTypes {
   albumName: string;
   added_at?: string;
   duration: number;
+  uri?: string[];
 }
 
 const TrackRow: React.FC<TrackRowTypes> = ({
@@ -21,11 +24,50 @@ const TrackRow: React.FC<TrackRowTypes> = ({
   albumName,
   added_at,
   duration,
+  uri,
 }) => {
+  const contextValues = SpotifyContext();
+
+  const handleRowClick = () => {
+    if (uri) {
+      if (
+        contextValues?.activeUri === JSON.stringify(uri) &&
+        contextValues?.play
+      )
+        return;
+      else contextValues?.setTrackUris(uri);
+      contextValues?.setPlay(true);
+    }
+  };
+
   return (
-    <div className="grid-cols items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600">
-      <div>
-        <span>{index + 1}</span>
+    <div
+      className="track-row grid-cols cursor-pointer items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600"
+      onClick={handleRowClick}
+    >
+      <div className="track-row-index">
+        {uri == contextValues?.activeUri && contextValues?.play ? (
+          <span className="pause text-green-600">
+            {/* <IoPause /> */}
+            <img
+              className="w-4"
+              src="https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
+            />
+          </span>
+        ) : (
+          <>
+            <span
+              className={`index ${
+                uri == contextValues?.activeUri && "text-green-600"
+              }`}
+            >
+              {index + 1}
+            </span>
+            <span className="play">
+              <IoPlay />
+            </span>
+          </>
+        )}
       </div>
       <div className="flex items-center pr-4">
         {image && (
@@ -34,7 +76,13 @@ const TrackRow: React.FC<TrackRowTypes> = ({
           </div>
         )}
         <div className="ml-2 flex flex-col truncate">
-          <span className="truncate">{name}</span>
+          <span
+            className={`truncate ${
+              uri == contextValues?.activeUri && "text-green-600"
+            }`}
+          >
+            {name}
+          </span>
           <span className="truncate opacity-70">{artistName}</span>
         </div>
       </div>

@@ -10,6 +10,7 @@ import RowSlider from "../components/rowSlider/RowSlider";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
 import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
 import CollectionHeader from "../components/collectionHeader/CollectionHeader";
+import PlayButtons from "../components/playButtons/PlayButtons";
 
 interface ArtistDataTypes {
   artist: SpotifyApi.SingleArtistResponse | undefined;
@@ -77,7 +78,11 @@ const Artist = () => {
           followers={artistData?.artist?.followers.total.toLocaleString()}
         />
       )}
-
+      {!artistDataLoading.artist && (
+        <div className="mt-4">
+          <PlayButtons uri={artistData?.artist?.uri || ""} />
+        </div>
+      )}
       <div className="Artist-top-tracks my-8">
         <h3 className="my-2 text-xl capitalize">Popular tracks</h3>
         <TrackRowHeading />
@@ -94,6 +99,7 @@ const Artist = () => {
                 name={item.name}
                 duration={item.duration_ms}
                 image={item.album.images[0].url}
+                uri={[item.uri]}
               />
             ))
             .slice(0, moreTracks ? 10 : 5)

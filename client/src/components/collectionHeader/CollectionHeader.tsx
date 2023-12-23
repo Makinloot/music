@@ -1,5 +1,6 @@
 import moment from "moment";
 import React from "react";
+import "./CollectionHeader.css";
 
 interface CollectionHeaderTypes {
   img?: string;
@@ -26,7 +27,11 @@ const CollectionHeader: React.FC<CollectionHeaderTypes> = ({
 }) => {
   return (
     <div className="Collection-header flex flex-col md:flex-row md:items-end">
-      <img className="mr-2 max-w-[200px]" src={img} alt={title} />
+      <img
+        className="Collection-header-image mr-2 h-[200px] w-[200px] object-cover"
+        src={img}
+        alt={title}
+      />
       <div>
         <h2 className="mb-2 text-2xl md:text-3xl">{title}</h2>
         <div className="flex flex-wrap items-center justify-start gap-1">

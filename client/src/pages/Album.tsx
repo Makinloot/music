@@ -8,7 +8,8 @@ import RowSlider from "../components/rowSlider/RowSlider";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
 import CollectionHeader from "../components/collectionHeader/CollectionHeader";
 import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
-import moment from "moment";
+import PlayButtons from "../components/playButtons/PlayButtons";
+import sumTotalTracksDuration from "../utils/sumTotalTracksDuration";
 
 const Album = () => {
   const contextValues = SpotifyContext();
@@ -22,6 +23,7 @@ const Album = () => {
   const [albums, setAlbums] = useState<
     SpotifyApi.AlbumObjectSimplified[] | undefined
   >();
+  const [albumTracksUris, setAlbumTracksUris] = useState([""]);
   const [albumsLoading, setAlbumsLoading] = useState(false);
 
   // fetch album by ID
@@ -31,8 +33,10 @@ const Album = () => {
       setArtistLoading(true);
       try {
         const fetchedAlbum = await contextValues?.spotify.getAlbum(id);
+        const filterUris = fetchedAlbum!.tracks.items.map((track) => track.uri);
         setAlbum(fetchedAlbum);
         setArtist(fetchedAlbum?.artists[0].id);
+        setAlbumTracksUris(filterUris);
         setAlbumTracksLoading(false);
         setArtistLoading(false);
       } catch (error) {
@@ -48,12 +52,9 @@ const Album = () => {
       setAlbumsLoading(true);
       try {
         const fetchedAlbums = await contextValues?.spotify.getArtistAlbums(id, {
-          limit: 20,
+          limit: 10,
         });
-        const filterAlbums = fetchedAlbums?.items.filter(
-          (item) => item.album_group === "album" && item.id !== id,
-        );
-        setAlbums(filterAlbums);
+        setAlbums(fetchedAlbums?.items);
         setAlbumsLoading(false);
       } catch (error) {
         console.log("error fetching albums by artist: ", error);
@@ -62,30 +63,6 @@ const Album = () => {
 
     if (artist) getAlbumsByArtist(artist);
   }, [artist, contextValues?.spotify, id]);
-
-  function sumTotalTracksDuration() {
-    const totalTracksDuration = moment
-      .utc(
-        album?.tracks?.items?.reduce(
-          (total, track) => total + track.duration_ms,
-          0,
-        ),
-      )
-      .format(
-        moment
-          .duration(
-            album?.tracks?.items?.reduce(
-              (total, track) => total + track.duration_ms,
-              0,
-            ),
-          )
-          .hours() >= 1
-          ? "h [hours], m [minutes], s [seconds]"
-          : "m [minutes], s [seconds]",
-      );
-
-    return totalTracksDuration;
-  }
 
   return (
     <div className="Album">
@@ -98,8 +75,16 @@ const Album = () => {
           artist={album?.artists[0].name}
           releaseDate={album?.release_date}
           totalTracks={album?.tracks.total}
-          totalTracksDuration={sumTotalTracksDuration()}
+          totalTracksDuration={sumTotalTracksDuration(
+            undefined,
+            album?.tracks.items,
+          )}
         />
+      )}
+      {!albumTracksLoading && albumTracksUris.length > 0 && (
+        <div className="mt-4">
+          <PlayButtons uri={album?.uri || ""} tracks={albumTracksUris} />
+        </div>
       )}
       <div className="my-4">
         <TrackRowHeading />
@@ -107,7 +92,7 @@ const Album = () => {
           <TrackRowSkeleton />
         ) : (
           album?.tracks?.items.map((item, index) => {
-            const { name, duration_ms, artists } = item;
+            const { name, duration_ms, artists, uri } = item;
             return (
               <TrackRow
                 key={uuidv4()}
@@ -116,6 +101,7 @@ const Album = () => {
                 artistName={artists[0].name}
                 duration={duration_ms}
                 name={name}
+                uri={[uri]}
               />
             );
           })

@@ -5,10 +5,12 @@ import noImg from "/no-img.png";
 import TrackRowHeading from "../components/trackRow/TrackRowHeading";
 import TrackRow from "../components/trackRow/TrackRow";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 import TrackRowSkeleton from "../components/trackRow/TrackRowSkeleton";
 import CollectionHeader from "../components/collectionHeader/CollectionHeader";
 import CollectionHeaderSkeleton from "../components/collectionHeader/CollectionHeaderSkeleton";
+import PlayButtons from "../components/playButtons/PlayButtons";
+import sumTotalTracksDuration from "../utils/sumTotalTracksDuration";
+import { Input } from "antd";
 
 const Playlist = () => {
   const contextValues = SpotifyContext();
@@ -20,9 +22,14 @@ const Playlist = () => {
   const [playlistTracks, setPlaylistTracks] =
     useState<SpotifyApi.PlaylistTrackObject[]>();
   const [playlistTracksLoading, setPlaylistTracksLoading] = useState(false);
+  const [playlistTracksUris, setPlaylistTracksuris] = useState([""]);
   const [owner, setOwner] = useState<
     SpotifyApi.UserProfileResponse | undefined
   >();
+  const [searchedData, setSearchedData] = useState<
+    SpotifyApi.PlaylistTrackObject[] | undefined
+  >([]);
+  const [searchValue, setSearchValue] = useState("");
 
   // fetch playlist details and tracks
   useEffect(() => {
@@ -34,6 +41,7 @@ const Playlist = () => {
         let hasMoreItems = true;
         let offset = 0;
         const fetchedPlaylist = await contextValues?.spotify.getPlaylist(id);
+        // console.log("PLAYLIST", fetchedPlaylist);
         setPlaylist(fetchedPlaylist);
         setPlaylistLoading(false);
         // fetch every track from playlist
@@ -51,6 +59,8 @@ const Playlist = () => {
             offset += 100;
           } else {
             setPlaylistTracks(allTracks);
+            const filterUris = allTracks.map((track) => track.track.uri);
+            setPlaylistTracksuris(filterUris);
             setPlaylistTracksLoading(false);
             hasMoreItems = false;
           }
@@ -76,67 +86,121 @@ const Playlist = () => {
     if (playlist?.owner.id) getPlaylistOwner(playlist.owner.id);
   }, [contextValues?.spotify, playlist?.owner?.id]);
 
-  function sumTotalTracksDuration() {
-    const totalTracksDuration = moment
-      .utc(
-        playlistTracks?.reduce(
-          (total, track) => total + track.track.duration_ms,
-          0,
-        ),
-      )
-      .format(
-        moment
-          .duration(
-            playlistTracks?.reduce(
-              (total, track) => total + track.track.duration_ms,
-              0,
-            ),
-          )
-          .hours() >= 1
-          ? "h [hours], m [minutes], s [seconds]"
-          : "m [minutes], s [seconds]",
-      );
-
-    return totalTracksDuration;
-  }
+  // search tracks in playlist
+  useEffect(() => {
+    if (searchValue.length >= 1) {
+      const filterPlaylistTracks = playlist?.tracks.items.filter((item) => {
+        return (
+          item.track.name.toLowerCase().includes(searchValue) ||
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          item.track.artists[0].name.toLowerCase().includes(searchValue) ||
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          item.track.album.name.toLowerCase().includes(searchValue)
+        );
+      });
+      setSearchedData(filterPlaylistTracks);
+    } else {
+      setSearchedData(undefined);
+    }
+  }, [playlist?.tracks.items, searchValue]);
 
   return (
     <div className="Playlist">
       {playlistLoading ? (
         <CollectionHeaderSkeleton />
       ) : (
-        <CollectionHeader
-          img={playlist?.images[0].url || noImg}
-          title={playlist?.name}
-          ownerImage={(owner?.images && owner?.images[0].url) || noImg}
-          ownerName={playlist?.owner.display_name}
-          totalTracks={playlist?.tracks?.total}
-          totalTracksDuration={sumTotalTracksDuration()}
-        />
+        <>
+          <CollectionHeader
+            img={playlist?.images ? playlist.images[0].url : noImg}
+            title={playlist?.name}
+            ownerImage={owner?.images ? owner?.images[0].url : noImg}
+            ownerName={playlist?.owner.display_name}
+            totalTracks={playlist?.tracks?.total}
+            totalTracksDuration={sumTotalTracksDuration(
+              playlistTracks,
+              undefined,
+            )}
+          />
+        </>
+      )}
+      {!playlistTracksLoading && playlistTracksUris.length > 0 && (
+        <div className="mt-4 flex items-center">
+          <div className="">
+            <PlayButtons
+              uri={playlist?.uri || ""}
+              tracks={playlistTracksUris}
+            />
+          </div>
+          <Input
+            className="ml-2 w-[250px]"
+            placeholder="Search in playlist..."
+            onChange={(e) => {
+              const debouneTimer = setTimeout(() => {
+                setSearchValue(e.target.value);
+              }, 500);
+
+              return () => clearTimeout(debouneTimer);
+            }}
+            allowClear
+          />
+        </div>
       )}
       <div>
         <TrackRowHeading added_at />
         {playlistTracksLoading ? (
           <TrackRowSkeleton />
         ) : (
-          playlistTracks &&
-          playlistTracks.map((item, index) => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const { name, duration_ms, album, artists } = item.track;
-            return (
-              <TrackRow
-                key={uuidv4()}
-                index={index}
-                albumName={album.name}
-                artistName={artists[0].name}
-                duration={duration_ms}
-                image={album?.images[0]?.url}
-                name={name}
-                added_at={item.added_at}
-              />
-            );
-          })
+          <>
+            {searchedData !== undefined ? (
+              searchedData.length > 0 ? (
+                searchedData.map((item, index) => {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  const { album, name, artists, duration_ms, uri } = item.track;
+                  return (
+                    <TrackRow
+                      key={uuidv4()}
+                      index={index}
+                      added_at={item.added_at}
+                      albumName={album.name}
+                      artistName={artists[0].name}
+                      duration={duration_ms}
+                      image={album.images[0].url}
+                      name={name}
+                      uri={[uri]}
+                    />
+                  );
+                })
+              ) : (
+                <div className="m-4 flex">
+                  <p className="text-xl">
+                    No results were found for your search.
+                  </p>
+                </div>
+              )
+            ) : playlistTracks ? (
+              playlistTracks.map((item, index) => {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                const { album, name, artists, duration_ms, uri } = item.track;
+                return (
+                  <TrackRow
+                    key={uuidv4()}
+                    index={index}
+                    added_at={item.added_at}
+                    albumName={album.name}
+                    artistName={artists[0].name}
+                    duration={duration_ms}
+                    image={album.images[0].url}
+                    name={name}
+                    uri={[uri]}
+                  />
+                );
+              })
+            ) : null}
+          </>
         )}
       </div>
     </div>

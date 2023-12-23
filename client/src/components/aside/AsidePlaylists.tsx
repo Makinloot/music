@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SpotifyContext } from "../../context/SpotifyContext";
 import AsideList, { AsideListSkeleton } from "./AsideList";
 import { v4 as uuidv4 } from "uuid";
+import noImg from "/no-img.png";
 
 const AsidePlaylists: React.FC<{ searchValue: string }> = ({ searchValue }) => {
   const contextValues = SpotifyContext();
@@ -48,7 +49,7 @@ const AsidePlaylists: React.FC<{ searchValue: string }> = ({ searchValue }) => {
           <AsideList
             url={`/playlist/${item.id}`}
             key={uuidv4()}
-            image={item.images[0].url}
+            image={item?.images[0] ? item.images[0].url : noImg}
             name={item.name}
             description={item.owner.display_name}
           />

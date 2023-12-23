@@ -1,11 +1,12 @@
 import { SpotifyContext } from "../../context/SpotifyContext";
 import noImg from "/no-img.png";
 import Skeleton from "react-loading-skeleton";
+import "./CollectionHeader.css";
 
 const CollectionHeaderSkeleton = () => {
   const contextValues = SpotifyContext();
   return (
-    <div className="album-header flex items-end">
+    <div className="Collection-header flex flex-col gap-2 md:flex-row md:items-end">
       <div className="relative">
         <img className="mr-2 max-w-[200px] opacity-0" src={noImg} />
         <Skeleton
@@ -15,7 +16,7 @@ const CollectionHeaderSkeleton = () => {
         />
       </div>
       <Skeleton
-        className="ml-2 h-7 w-60 max-w-full"
+        className="h-7 w-60 max-w-full"
         baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}
         highlightColor={`${contextValues?.darkMode ? "#444" : "#ffffff"}`}
         count={2}
