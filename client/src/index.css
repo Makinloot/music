@@ -36,6 +36,20 @@ html {
   background-color: gray;
 }
 
+.player.dark div:first-of-type {
+  /* display: none; */
+  background-color: #001529;
+}
+
+.player.dark * {
+  color: white !important;
+}
+
+.player.dark .slider__thumb,
+.player.dark .volume__thumb {
+  background-color: white !important;
+}
+
 @media (max-width: 768px) {
   .rswp__active {
     /* display: none !important; */

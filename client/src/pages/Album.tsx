@@ -102,6 +102,8 @@ const Album = () => {
                 duration={duration_ms}
                 name={name}
                 uri={[uri]}
+                artistId={artists[0].id}
+                albumId={album.id}
               />
             );
           })

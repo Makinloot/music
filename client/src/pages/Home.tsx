@@ -138,7 +138,7 @@ function TopTracks() {
                 <Link
                   to={`/album/${item.album.id}`}
                   key={uuidv4()}
-                  className="flex items-center overflow-hidden rounded-md bg-gray-400/30"
+                  className="flex items-center overflow-hidden rounded-md bg-gray-400/30 transition-all duration-300 hover:scale-95 hover:text-inherit"
                 >
                   <img
                     className="w-16 lg:w-24"

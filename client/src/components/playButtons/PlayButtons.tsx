@@ -1,26 +1,8 @@
-import { useEffect, useState } from "react";
 import { SpotifyContext } from "../../context/SpotifyContext";
-import { IoPauseCircle, IoPlayCircle, IoShuffle } from "react-icons/io5";
+import { IoPauseCircle, IoPlayCircle } from "react-icons/io5";
 
-const PlayButtons = ({
-  uri,
-  tracks,
-  noShuffle,
-}: {
-  uri?: string;
-  tracks?: string[];
-  noShuffle?: boolean;
-}) => {
+const PlayButtons = ({ uri, tracks }: { uri?: string; tracks?: string[] }) => {
   const contextValues = SpotifyContext();
-  const [shuffledTracks, setShuffledTracks] = useState([""]);
-
-  // shuffle tracks
-  useEffect(() => {
-    const shuffledUris = tracks
-      ? [...tracks].sort(() => Math.random() - 0.5)
-      : [];
-    setShuffledTracks(shuffledUris);
-  }, [contextValues?.shuffle, tracks, contextValues?.trackUris]);
 
   // check if tracks equal to trackUris
   const areArraysEqual = (
@@ -51,14 +33,13 @@ const PlayButtons = ({
       ) : (
         <button
           onClick={() => {
-            if (uri && !contextValues?.shuffle) {
+            if (uri) {
               // contextValues?.setActiveUri(uri);
+              contextValues?.setTrackUris([""]);
               contextValues?.setTrackUris([uri]);
               // contextValues?.setPlay(true);
-            } else if (shuffledTracks && contextValues?.shuffle) {
-              contextValues?.setTrackUris(shuffledTracks);
-              // contextValues?.setPlay(true);
             } else if (!uri && tracks) {
+              contextValues?.setTrackUris([""]);
               contextValues?.setTrackUris(tracks);
               // contextValues?.setPlay(true);
             }
@@ -67,29 +48,6 @@ const PlayButtons = ({
         >
           <IoPlayCircle size={38} />
         </button>
-      )}
-      {contextValues?.shuffle ? (
-        <button
-          onClick={() => {
-            localStorage.setItem("shuffle", "false");
-            contextValues.setShuffle(false);
-          }}
-        >
-          <IoShuffle size={35} color="green" />
-        </button>
-      ) : (
-        !noShuffle && (
-          <button
-            onClick={() => {
-              localStorage.setItem("shuffle", "true");
-              contextValues?.setShuffle(true);
-              contextValues?.setTrackUris(shuffledTracks);
-              contextValues?.setPlay(true);
-            }}
-          >
-            <IoShuffle size={35} />
-          </button>
-        )
       )}
     </div>
   );

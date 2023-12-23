@@ -4,6 +4,7 @@ import noImg from "/no-img.png";
 import { IoPlay } from "react-icons/io5";
 import "./TrackRow.css";
 import { SpotifyContext } from "../../context/SpotifyContext";
+import { Link } from "react-router-dom";
 
 interface TrackRowTypes {
   index: number;
@@ -14,6 +15,8 @@ interface TrackRowTypes {
   added_at?: string;
   duration: number;
   uri?: string[];
+  artistId?: string;
+  albumId?: string;
 }
 
 const TrackRow: React.FC<TrackRowTypes> = ({
@@ -25,6 +28,8 @@ const TrackRow: React.FC<TrackRowTypes> = ({
   added_at,
   duration,
   uri,
+  artistId,
+  albumId,
 }) => {
   const contextValues = SpotifyContext();
 
@@ -42,13 +47,18 @@ const TrackRow: React.FC<TrackRowTypes> = ({
 
   return (
     <div
-      className="track-row grid-cols cursor-pointer items-center overflow-x-hidden px-2 py-3 hover:bg-slate-600"
-      onClick={handleRowClick}
+      className={`track-row grid-cols cursor-pointer items-center overflow-x-hidden px-2 py-3 ${
+        contextValues?.darkMode ? "hover:bg-slate-800" : "hover:bg-slate-200"
+      }`}
+      onClick={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.localName === "a") return;
+        handleRowClick();
+      }}
     >
       <div className="track-row-index">
         {uri == contextValues?.activeUri && contextValues?.play ? (
           <span className="pause text-green-600">
-            {/* <IoPause /> */}
             <img
               className="w-4"
               src="https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f5eb96f2.gif"
@@ -83,11 +93,27 @@ const TrackRow: React.FC<TrackRowTypes> = ({
           >
             {name}
           </span>
-          <span className="truncate opacity-70">{artistName}</span>
+          <Link
+            to={`/artist/${artistId}`}
+            className={`truncate opacity-70 ${
+              contextValues?.darkMode
+                ? "hover:text-white"
+                : "hover:text-inherit"
+            } hover:underline`}
+          >
+            {artistName}
+          </Link>
         </div>
       </div>
       <div className="album-name truncate pr-4">
-        <span className="truncate">{albumName}</span>
+        <Link
+          to={`/album/${albumId}`}
+          className={`truncate ${
+            contextValues?.darkMode ? "hover:text-white" : "hover:text-inherit"
+          } hover:underline`}
+        >
+          {albumName}
+        </Link>
       </div>
       <div className="added-at-col">
         <span>{added_at && moment(added_at).fromNow()}</span>

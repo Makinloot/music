@@ -5,7 +5,11 @@ const Player = ({ accessToken }: { accessToken: string }) => {
   const contextValues = SpotifyContext();
 
   return (
-    <div className="player fixed bottom-0 z-[40000] w-full">
+    <div
+      className={`player ${
+        contextValues?.darkMode && "dark"
+      } fixed bottom-0 z-[40000] w-full`}
+    >
       <SpotifyPlayer
         hideAttribution
         styles={{ height: 80 }}

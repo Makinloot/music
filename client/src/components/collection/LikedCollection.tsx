@@ -75,6 +75,8 @@ export default function LikedCollection() {
                       image={album.images[0].url}
                       name={name}
                       uri={[uri]}
+                      artistId={artists[0].id}
+                      albumId={album.id}
                     />
                   );
                 })
@@ -99,6 +101,8 @@ export default function LikedCollection() {
                     image={album.images[0].url}
                     name={name}
                     uri={[uri]}
+                    artistId={artists[0].id}
+                    albumId={album.id}
                   />
                 );
               })

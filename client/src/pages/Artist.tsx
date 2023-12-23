@@ -100,6 +100,8 @@ const Artist = () => {
                 duration={item.duration_ms}
                 image={item.album.images[0].url}
                 uri={[item.uri]}
+                artistId={item.artists[0].id}
+                albumId={item.album.id}
               />
             ))
             .slice(0, moreTracks ? 10 : 5)

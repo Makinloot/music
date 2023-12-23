@@ -29,8 +29,6 @@ type Values = {
   setTrackUris: React.Dispatch<React.SetStateAction<string[]>>;
   play: boolean;
   setPlay: React.Dispatch<React.SetStateAction<boolean>>;
-  shuffle: boolean;
-  setShuffle: React.Dispatch<React.SetStateAction<boolean>>;
   activeUri: string;
   setActiveUri: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -56,9 +54,6 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedPage, setSelectedPage] = useState("1");
   const [trackUris, setTrackUris] = useState([""]);
   const [play, setPlay] = useState(false);
-  const [shuffle, setShuffle] = useState(
-    localStorage.getItem("shuffle") === "true" ? true : false || false,
-  );
   const [activeUri, setActiveUri] = useState("");
 
   // liked tracks & total liked tracks
@@ -152,8 +147,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
     setTrackUris,
     play,
     setPlay,
-    shuffle,
-    setShuffle,
+
     activeUri,
     setActiveUri,
   };

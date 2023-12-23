@@ -84,7 +84,7 @@ export function SearchTracks({
   return (
     <>
       <div className="mt-4">
-        <PlayButtons tracks={tracksUri} noShuffle />
+        <PlayButtons tracks={tracksUri} />
       </div>
       <div className="tracks-container my-4">
         <TrackRowHeading />
@@ -100,6 +100,8 @@ export function SearchTracks({
               image={album?.images[0]?.url}
               name={name}
               uri={[uri]}
+              artistId={artists[0].id}
+              albumId={album.id}
             />
           );
         })}
