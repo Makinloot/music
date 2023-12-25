@@ -47,7 +47,7 @@ const TrackRow: React.FC<TrackRowTypes> = ({
 
   return (
     <div
-      className={`track-row grid-cols cursor-pointer items-center overflow-x-hidden px-2 py-3 ${
+      className={`track-row grid-cols cursor-pointer items-center overflow-x-hidden rounded-md px-2 py-3 ${
         contextValues?.darkMode ? "hover:bg-slate-800" : "hover:bg-slate-200"
       }`}
       onClick={(e) => {

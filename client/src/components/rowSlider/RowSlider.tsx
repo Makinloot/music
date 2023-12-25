@@ -79,7 +79,7 @@ const RowSlider: React.FC<RowSliderTypes> = ({
         spaceBetween={20}
         freeMode={true}
         modules={[FreeMode]}
-        className="mySwiper"
+        className="mySwiper row-container"
       >
         {playerHistoryObject && historyObjectRow(playerHistoryObject)}
         {recommendationsFromSeeds &&
@@ -104,6 +104,7 @@ function historyObjectRow(data: SpotifyApi.PlayHistoryObject[]) {
           image={item.track.album.images[0].url}
           name={item.track.name}
           nameSecondary={item.track.artists[0].name}
+          url={`/artist/${item.track.artists[0].id}`}
         />
       </Link>
     </SwiperSlide>
@@ -124,6 +125,7 @@ function recommendationsRow(data: SpotifyApi.RecommendationsFromSeedsResponse) {
             image={item.album.images[0].url}
             name={item.name}
             nameSecondary={item.artists[0].name}
+            url={`/artist/${item.artists[0].id}`}
           />
         </Link>
       </SwiperSlide>
@@ -143,6 +145,7 @@ function albumObjSimplified(data: SpotifyApi.AlbumObjectSimplified[]) {
               image={item.images[0].url}
               name={item.name}
               nameSecondary={item.artists[0].name}
+              url={`/artist/${item.artists[0].id}`}
             />
           </Link>
         </SwiperSlide>
@@ -161,6 +164,7 @@ function artistAlbumResp(data: SpotifyApi.ArtistsAlbumsResponse) {
             image={item.images[0].url}
             name={item.name}
             nameSecondary={item.artists[0].name}
+            url={`/artist/${item.artists[0].id}`}
           />
         </Link>
       </SwiperSlide>

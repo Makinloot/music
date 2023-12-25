@@ -1,0 +1,6 @@
+.top-track-play-btn {
+  transition: all 0.3s linear;
+}
+.top-track-wrapper:hover .top-track-play-btn {
+  display: block;
+}

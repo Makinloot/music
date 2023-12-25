@@ -42,7 +42,7 @@ const Main: React.FC = () => {
 
   return (
     <Layout
-      className={`container h-[calc(100vh-80px)] overflow-scroll overflow-x-hidden ${
+      className={`container h-[calc(100vh-124px)] overflow-scroll overflow-x-hidden md:h-[calc(100vh-80px)] ${
         contextValues?.darkMode ? "text-white" : "text-black"
       }`}
     >
@@ -55,7 +55,6 @@ const Main: React.FC = () => {
         <motion.div
           initial={smallScreen ? initialMarginSmall : initialMargin}
           animate={smallScreen ? initialMarginSmall : initialMargin}
-          // className={contextValues?.collapsed ? "ml-[100px]" : "ml-[200px]"}
         >
           {/* ----------- HEADER ----------- */}
           <Header />

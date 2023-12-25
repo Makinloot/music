@@ -21,7 +21,9 @@ const AsideList: React.FC<{
       to={url}
       className={`flex items-center ${
         contextValues?.collapsed && "justify-center"
-      } my-4 px-[2px]`}
+      } my-4 rounded-md px-[2px] py-[1px] hover:text-inherit ${
+        contextValues?.darkMode ? "hover:bg-slate-800" : "hover:bg-slate-200"
+      }`}
       onClick={closeAside}
     >
       <div

@@ -17,3 +17,9 @@
 .hide-scrollbar::-moz-scrollbar-thumb {
   background-color: transparent;
 }
+
+@media (max-width: 768px) {
+  .aside-open-close-library {
+    display: none !important;
+  }
+}

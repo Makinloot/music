@@ -164,7 +164,7 @@ export function SearchAlbums({
           <Link
             to={`/album/${album.id}`}
             key={uuidv4()}
-            className="my-4 flex flex-col"
+            className="my-4 flex flex-col hover:text-inherit"
           >
             <img
               className="w-full rounded-md object-cover"
@@ -173,9 +173,12 @@ export function SearchAlbums({
             />
             <div className="mt-2 w-full">
               <p className="truncate text-xl">{album?.name}</p>
-              <p className="truncate text-lg opacity-70">
+              <Link
+                to={`/artist/${album.artists[0].id}`}
+                className="truncate text-lg opacity-70 hover:text-inherit hover:underline"
+              >
                 {album?.artists[0]?.name}
-              </p>
+              </Link>
             </div>
           </Link>
         ))}

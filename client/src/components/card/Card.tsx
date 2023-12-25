@@ -1,16 +1,17 @@
 import React from "react";
 import noImg from "/no-img.png";
+import { Link } from "react-router-dom";
 
 interface CardTypes {
   name: string;
   image: string;
   nameSecondary: string;
+  url: string;
 }
 
-const Card: React.FC<CardTypes> = ({ name, image, nameSecondary }) => {
+const Card: React.FC<CardTypes> = ({ name, image, nameSecondary, url }) => {
   return (
     <div className="Card select-none rounded-md">
-      {/* <div className="Card max-w-[170px] rounded-md p-2"> */}
       <div className="Card-img">
         <img
           className="max-h-[215px] w-full max-w-[215px] rounded-md object-cover"
@@ -20,7 +21,9 @@ const Card: React.FC<CardTypes> = ({ name, image, nameSecondary }) => {
       </div>
       <div className="my-2">
         <h3 className="truncate text-base">{name}</h3>
-        <h5 className="truncate opacity-70">{nameSecondary}</h5>
+        <Link to={url} className="truncate opacity-70 hover:underline">
+          {nameSecondary}
+        </Link>
       </div>
     </div>
   );

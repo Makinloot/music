@@ -8,7 +8,10 @@ const CollectionHeaderSkeleton = () => {
   return (
     <div className="Collection-header flex flex-col gap-2 md:flex-row md:items-end">
       <div className="relative">
-        <img className="mr-2 max-w-[200px] opacity-0" src={noImg} />
+        <img
+          className="Collection-header-image mr-2 max-w-[200px] opacity-0"
+          src={noImg}
+        />
         <Skeleton
           className="absolute inset-0"
           baseColor={`${contextValues?.darkMode ? "#202020" : "#eee"}`}

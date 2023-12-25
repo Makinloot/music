@@ -38,11 +38,15 @@ const Aside = () => {
       collapsible
       collapsed={contextValues?.collapsed}
       collapsedWidth={smallScreen ? 0 : 100}
-      className="!fixed z-[30000] h-[calc(100vh-80px)]"
+      className="Sider-container-main !fixed z-[30000] h-[calc(100vh-80px)] select-none md:h-[calc(100vh-80px)]"
       style={{ backgroundColor: !contextValues?.darkMode ? "white" : "" }}
     >
       <div
-        className={`${contextValues?.collapsed ? "h-[200px]" : "h-[300px]"}`}
+        className={`${
+          contextValues?.collapsed
+            ? "h-[152px] md:h-[200px]"
+            : "h-[252px] md:h-[300px]"
+        }`}
       >
         {/* ASIDE MENU */}
         <Menu
@@ -86,7 +90,7 @@ const Aside = () => {
 
         {/* open-close menu button */}
         <button
-          className={`flex h-12 w-full cursor-pointer items-center ${
+          className={`aside-open-close-library flex h-12 w-full cursor-pointer items-center ${
             !contextValues?.collapsed
               ? "ml-[25px] justify-start"
               : "justify-center"
@@ -162,13 +166,12 @@ const Aside = () => {
       <div
         className={`Library custom-scrollbar relative overflow-scroll overflow-x-hidden ${
           contextValues?.collapsed
-            ? "hide-scrollbar h-[calc(100%-200px)] px-[4px]"
-            : "h-[calc(100%-300px)] px-[2px]"
+            ? "hide-scrollbar h-[calc(100%-175px)] px-[4px] md:h-[calc(100%-200px)]"
+            : "h-[calc(100%-285px)] px-[2px] md:h-[calc(100%-300px)]"
         }`}
       >
         {/* MAPPED DATA */}
         <div className="pr-1">
-          {/* <div className="my-4 h-[550px] overflow-scroll overflow-x-hidden pr-1"> */}
           {asideType === "playlist" ? (
             <AsidePlaylists searchValue={searchValue} />
           ) : asideType === "album" ? (
